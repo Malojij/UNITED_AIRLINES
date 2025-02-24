@@ -1,0 +1,27 @@
+{
+	"CCTTicketDisplayRequest": {
+		"DisplayFlag": "00",
+		"AllowCardReader": "N",
+		"ADSDKSpecVer": "",
+		"SessionId": "",
+		"HeaderText": "Please Check Product List",
+		"FooterText": "",
+		"ButtonText1": "",
+		"ButtonText2": "",
+		"ButtonText3": "",
+		"TransTotalDiscountAmt": "10.00",
+		"TransTotalQuantity": "170",
+		"TransSubTotalAmount": "",
+		"TaxAmount": "10.00",
+		"ServicesTotalAmount": "0.00",
+		"TransTotalAmount": "",
+		"PONumber": "",
+		"LanguageIndicator": "",
+		"CashBackFlag": "0",
+		"TransactionType": "",
+		"POSID": "",
+		"APPID": "",
+		"CCTID": "",
+		"ClerkID": "111"
+	}
+}

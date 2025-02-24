@@ -1,0 +1,31 @@
+{
+	"SignatureRequest": {
+		"TransactionIdentifier": "",
+		"SignUploadFlag": "N",
+		"SignatureData": "",
+		"HeaderLine": "Please Sign",
+		"ADSDKSpecVer": "",
+		"SessionId": "",
+		"CustomDisplay1": "Thank You For visiting...",
+		"CustomDisplay2": "Visit Again",
+		"SignatureType": "01",
+		"ButtonMsg": {
+			"ButtonSizeFlag": "00",
+			"Button1Text": "",
+			"Button2Text": "",
+			"Button3Text": "",
+			"Button4Text": ""
+		},
+		"ListData": {
+			"Paragraph": [
+				"",
+				""
+			]
+		},
+		"ECAFlag": "",
+		"LanguageIndicator": "",
+		"POSID": "",
+		"APPID": "",
+		"CCTID": ""
+	}
+}

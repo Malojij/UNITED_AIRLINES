@@ -1,0 +1,224 @@
+{% include "header.html" %}
+{% load static %}
+<!-- ======= Hero Section ======= -->
+<main id="main" xmlns="http://www.w3.org/1999/html">
+    <section class="d-flex align-items-center" style="">
+        <div class="container" data-aos="zoom-out" data-aos-delay="100">
+            <div class="sidepanel" id="sidepanel">
+                    <form method="POST" action="/Ewic_Testing" novalidate>
+                        {% csrf_token %}
+                    <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="shadow-textarea">
+                                <select class="mytext w-100 text-center z-depth-1" id="Transaction_Type" name="Transaction_Type" required>
+                                    <option value="">Select Transaction</option>
+                                    <option value="00">Sale</option>
+									<option value="01">Void</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="shadow-textarea">
+                                <select class="mytext w-100 text-center z-depth-1" id="gcb_type" name="gcb_type" required>
+                                  <option value="">Select Entry Mode</option>
+                                  <option value="00">Select GCB type</option>
+                                  <option value="01">MSR & EMV</option>
+                                  <option value="02">Manual Keyed</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="submit" class="shadow-textarea mytext  text-center z-depth-1 btn btn-primary " id="send_data" name="addsubmit" value="Submit" />
+                        </div>
+                    </div>
+                    </div>
+                    </form>
+                    {% if gcb %}
+                    <div class="col-md-12 mt-5 tableFixHead">
+                        <div class="row">
+                            <div class="col-md-4 ">
+                               {% if gcb %} <p class="trn">GCB Transaction</p> {% endif %}
+                                <div id="owl-example" class="trndiv owl-carousel">
+                                    <div class="item">
+                                        <div>
+                                            <a class="float-button" id='gcb_button_req' data-toggle="tooltip" data-placement="bottom" title="Copy" onclick="copyToClipboard('#gcb_request', '#gcb_button_req')"><i class="fas fa-copy"></i></a>
+                                        </div>
+                                        <div><pre><code id="gcb_request">{{ Gcb_Transaction_Request }}</code></pre></div>
+                                    </div>
+                                    <div class="item">
+                                        <div>
+                                            <a class="float-button" id='gcb_button_res' data-toggle="tooltip" data-placement="bottom" title="Copy" onclick="copyToClipboard('#gcb_response', '#gcb_button_res')"><i class="fas fa-copy"></i></a>
+                                        </div>
+                                        <pre><code id="gcb_response">{{ Gcb_Transaction_Response }}</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 ">
+                                <p class="trn">Ewic Pin Entry</p>
+                                  <div id="owl-example1" class="trndiv owl-carousel">
+                                    <div class="item">
+                                        <div>
+                                            <a class="float-button" id="parent_button_req" data-toggle="tooltip" data-placement="bottom" title="Copy" onclick="copyToClipboard('#parent_request', '#parent_button_req')"><i class="fas fa-copy"></i></a>
+                                        </div>
+                                        <pre><code id="parent_request">{{ Ewic_Pin_Entry_request }}</code></pre>
+                                    </div>
+                                    <div class="item">
+                                        <div>
+                                            <a class="float-button" id="parent_button_res" data-toggle="tooltip" data-placement="bottom" title="Copy" onclick="copyToClipboard('#parent_response', '#parent_button_res')"><i class="fas fa-copy"></i></a>
+                                        </div>
+                                        <pre><code id="parent_response">{{ Ewic_Pin_Entry_response }}</code></pre>
+                                    </div>
+                                 </div>
+                                  <div class="shadow-textarea w-100 text-center">
+                                  <div data-aos-easing="ease" data-aos-duration="1000" data-aos-delay="0" class="w-100 text-center p-2" id=""><span style="vertical-align: middle;"><i class="fa fa-solid fa-check" aria-hidden="true"></i></span><span class="m-5" style="font-weight:600">Response Text : {{ Ewic_Pin_Entry_ResponseText }}</span></div>
+                                  </div>
+                            </div>
+                            <div class="col-md-4 ">
+                                {% if gcb %}<p class="trn">Balance Enquiry </p>{% endif %}
+                               <div id="owl-example2" class="trndiv owl-carousel">
+                                    <div class="item">
+                                        <div>
+                                            <a class="float-button" id='child_button_req' data-toggle="tooltip" data-placement="bottom" title="Copy" onclick="copyToClipboard('#child_request', '#child_button_req')"><i class="fas fa-copy"></i></a>
+                                        </div>
+                                        <pre id="child_request">{{ Ewic_Balance_Enquiry_request }}</pre>
+                                    </div>
+                                    <div class="item">
+                                        <div>
+                                            <a class="float-button" id='child_button_res' data-toggle="tooltip" data-placement="bottom" title="Copy" onclick="copyToClipboard('#child_response', '#child_button_res')"><i class="fas fa-copy"></i></a>
+                                        </div>
+                                        <pre id="child_response">{{ Ewic_Balance_Enquiry_response }}</pre>
+                                    </div>
+                                </div>
+                               <div class="shadow-textarea w-100 text-center">
+                               <div data-aos-easing="ease" data-aos-duration="1000" data-aos-delay="0" class="w-100 text-center p-2" id=""><span style="vertical-align: middle;"><i class="fa fa-solid fa-check" aria-hidden="true"></i></span><span class="m-5" style="font-weight:600">Response Text : {{ Ewic_Balance_Enquiry_ResponseText }}</span></div>
+                               </div>
+                            </div>
+                            <div class="col-md-4 ">
+                                <p class="trn">Ewic Transaction Request</p>
+                                  <div id="owl-example1" class="trndiv owl-carousel">
+                                    <div class="item">
+                                        <div>
+                                            <a class="float-button" id="parent_button_req" data-toggle="tooltip" data-placement="bottom" title="Copy" onclick="copyToClipboard('#parent_request', '#parent_button_req')"><i class="fas fa-copy"></i></a>
+                                        </div>
+                                        <pre><code id="parent_request">{{ Ewic_Transrequest_request }}</code></pre>
+                                    </div>
+                                    <div class="item">
+                                        <div>
+                                            <a class="float-button" id="parent_button_res" data-toggle="tooltip" data-placement="bottom" title="Copy" onclick="copyToClipboard('#parent_response', '#parent_button_res')"><i class="fas fa-copy"></i></a>
+                                        </div>
+                                        <pre><code id="parent_response">{{ Ewic_Transrequest_response }}</code></pre>
+                                    </div>
+                                 </div>
+                                  <div class="shadow-textarea w-100 text-center">
+                                  <div data-aos-easing="ease" data-aos-duration="1000" data-aos-delay="0" class="w-100 text-center p-2" id=""><span style="vertical-align: middle;"><i class="fa fa-solid fa-check" aria-hidden="true"></i></span><span class="m-5" style="font-weight:600">Response Text : {{ Ewic_Transrequest_ResponseText }}</span></div>
+                                  </div>
+                            </div>
+                            <div class="col-md-4 ">
+                                {% if gcb %}<p class="trn">Ewic Card Removed </p>{% endif %}
+                               <div id="owl-example2" class="trndiv owl-carousel">
+                                    <div class="item">
+                                        <div>
+                                            <a class="float-button" id='child_button_req' data-toggle="tooltip" data-placement="bottom" title="Copy" onclick="copyToClipboard('#child_request', '#child_button_req')"><i class="fas fa-copy"></i></a>
+                                        </div>
+                                        <pre id="child_request">{{ Ewic_Card_Removed_request }}</pre>
+                                    </div>
+                                    <div class="item">
+                                        <div>
+                                            <a class="float-button" id='child_button_res' data-toggle="tooltip" data-placement="bottom" title="Copy" onclick="copyToClipboard('#child_response', '#child_button_res')"><i class="fas fa-copy"></i></a>
+                                        </div>
+                                        <pre id="child_response">{{ Ewic_Card_Removed_response }}</pre>
+                                    </div>
+                                </div>
+                               <div class="shadow-textarea w-100 text-center">
+                               <div data-aos-easing="ease" data-aos-duration="1000" data-aos-delay="0" class="w-100 text-center p-2" id=""><span style="vertical-align: middle;"><i class="fa fa-solid fa-check" aria-hidden="true"></i></span><span class="m-5" style="font-weight:600">Response Text : {{ Ewic_Transrequest_ResponseText }}</span></div>
+                               </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+        </div>
+    </section>
+    <section>
+        <div class="panel-wrap">
+            <div class="panel">
+                <div class='w-100 d-none mt-3' id='export_btn'>
+                    <button class="btn btn-primary w-100" name='btn' onclick='exportToExcel()' type='button'>Export<i
+                            class='bx bxs-download'></i></button>
+                </div>
+                <div class="accordion" id="accordion"></div>
+            </div>
+        </div>
+    </section>
+</main>
+<div id="preloader"></div>
+<a class="back-to-top" href="#"><i class="icofont-simple-up"></i></a>
+<script src="{% static 'asset/vendor/jquery.easing/jquery.easing.min.js' %}"></script>
+<script src="{% static 'asset/vendor/php-email-form/validate.js' %}"></script>
+<script src="{% static 'asset/vendor/waypoints/jquery.waypoints.min.js' %}"></script>
+<script src="{% static 'asset/vendor/counterup/counterup.min.js' %}"></script>
+<script src="{% static 'asset/vendor/isotope-layout/isotope.pkgd.min.js' %}"></script>
+<script src="{% static 'asset/vendor/venobox/venobox.min.js' %}"></script>
+<script src="{% static 'asset/vendor/aos/aos.js' %}"></script>
+<script src="{% static 'asset/js/main.js' %}"></script>
+<script>
+
+$(document).ready(function() {
+    $("body").tooltip({ selector: '[data-toggle=tooltip]' });
+});
+
+$("button").click(function(){
+  $("p").toggleClass("main");
+});
+
+function copyToClipboard(element, element2) {
+  var $temp = $("<input>");
+  $("body").append($temp);
+  $temp.val($(element).text()).select();
+  document.execCommand("copy");
+  $temp.remove();
+  $('body').find('.float-button').removeClass("float-button-click");
+  $(element2).toggleClass("float-button-click");
+}
+
+function Get_Transaction_Details(){
+    var cds = $("#cds").val();
+    if(cds == 1 || cds == 2 || cds == 4){
+    $('#card-details').removeClass('d-none');
+    $("#TrackData").attr("required", "true");
+
+    }
+    if(cds == 6 || cds == 17){
+    $('#card-details').removeClass('d-none');
+    $("#TrackData").attr("required", "true");
+    $("#EmvData").attr("required", "true");
+    }
+}
+
+$(".trndiv").owlCarousel({
+    autoPlay: 3000,
+    items: 3,
+    margin: 10,
+    itemsDesktop: [1199, 1],
+    itemsDesktopSmall: [979, 1],
+    navigation: true,
+    responsiveClass: true,
+    responsive: {
+        0: {
+            items: 1,
+
+        },
+        600: {
+            items: 1,
+
+        },
+        1000: {
+            items: 1,
+
+        }
+    }
+
+});
+</script>
+</body>
+</html>

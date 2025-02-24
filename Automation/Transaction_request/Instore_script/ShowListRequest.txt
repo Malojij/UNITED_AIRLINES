@@ -1,0 +1,43 @@
+{
+	"ShowListRequest": {
+		"HeaderText": "Please Confirm the enrollment",
+		"ADSDKSpecVer": "6.14.8",
+		"SessionId": "12345",
+		"CustomDisplay1": "CustomDisplayMessage1",
+		"CustomDisplay2": "CustomDisplayMessage2",
+		"OptionsType": "",
+		"OptionsMsgCount": "4",
+		"ListData": {
+			"Paragraph": [
+				"This is Paragraph 1.",
+				"This is Paragraph 2."
+			]
+		},
+		"ButtonText1": "YES",
+		"ButtonText2": "NO",
+		"ButtonText3": "",
+		"FontStyle": "0",
+		"ScreenTimeOut": "150",
+		"AllowCancel": "1",
+		"OptionsMsg": {
+			"LineItem": [
+				{
+					"OptionsValue": "$10"
+				},
+				{
+					"OptionsValue": "$20"
+				},
+				{
+					"OptionsValue": "$30"
+				},
+				{
+					"OptionsValue": "$40"
+				}
+			]
+		},
+		"LanguageIndicator": "",
+		"POSID": "01",
+		"APPID": "01",
+		"CCTID": "01"
+	}
+}

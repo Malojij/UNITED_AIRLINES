@@ -1,0 +1,24 @@
+{
+	"GetUserInputRequest": {
+		"Type": "",
+		"HeaderText": "Enter Phone Number",
+		"ADSDKSpecVer": "6.14.8",
+		"MessageLine1": "",
+		"MessageLine2": "",
+		"ButtonText1": "Confirm",
+		"ButtonText2": "Cancel",
+		"ButtonText3": "Skip",
+		"MinInputLimit": "4",
+		"MaxInputLimit": "35",
+		"Format": "1",
+		"ScreenTimeOut": "150",
+		"AllowCancel": "1",
+		"SessionId": "12345",
+		"LanguageIndicator": "",
+		"DefaultText": "",
+		"POSID": "01",
+		"APPID": "01",
+		"CCTID": "01",
+		"BackgroundImage": "Custom_1"
+	}
+}

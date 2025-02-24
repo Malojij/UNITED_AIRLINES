@@ -1,0 +1,26 @@
+{
+  "CloseTransactionRequest": {
+    "CloseReasonCode": "TRANSACTION_COMPLETE",
+    "ADSDKSpecVer": "6.14.9",
+    "SessionId": "12345",
+    "OrigAurusPayTicketNum": "",
+    "OrigTransactionIdentifier": "",
+    "InvoiceNumber": "",
+    "TransactionDate": "10112022",
+    "TransactionTime": "125321",
+    "ECOMMInfo": {
+      "MerchantIdentifier": "100000000000",
+      "StoreId": "11111",
+      "TerminalId": "11111111"
+    },
+    "ClerkID": "111",
+    "EndWIC": "0",
+    "ProcessingMode": "0",
+    "LanguageIndicator": "",
+    "ReferenceNumber": "",
+    "BackgroundImage": "",
+    "POSID": "D01",
+    "APPID": "02",
+    "CCTID": "06"
+  }
+}

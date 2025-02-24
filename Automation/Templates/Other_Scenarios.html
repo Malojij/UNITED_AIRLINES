@@ -1,0 +1,174 @@
+{% include "header.html" %}
+{% load static %}
+<!-- ======= Hero Section ======= -->
+<main id="main">
+  <section class="d-flex align-items-center" style="">
+    <div class="container" data-aos="zoom-out" data-aos-delay="100">
+      <div class="sidepanel" id="sidepanel">
+        <div class="col-md-12">
+          <div class="row mt-5">
+            <div class="col-md-2">
+              <div class="shadow-textarea">
+                <select class="mytext w-100 text-center z-depth-1" id="Transaction_Type" name="Transaction_Type" required>
+                  <option value="15">Inside Sale Outdoor Refund ( Ticketbased )</option>
+                  <option value="17">Inside Sale Outdoor Refund ( CRMBased )</option>
+                  <option value="16">Refund Retry</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="shadow-textarea">
+                <select class="mytext w-100 text-center z-depth-1" id="token_type" name="token_type" required>
+                  <option value="00">Select Token</option>
+                  <option value="01">Card Token</option>
+                  <option value="02">CI Token</option>
+                  <option value="03">CRM Token</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="shadow-textarea">
+                <select class="mytext w-100 text-center z-depth-1" id="gcb_type" name="gcb_type" required>
+                  <option value="00">Select GCB type</option>
+                  <option value="N">MSR & EMV</option>
+                  <option value="Y">Manual Keyed</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="shadow-textarea">
+                <select class="mytext w-100 text-center z-depth-1" id="product_count" name="product_count" required>
+                  <option value="0">Select products count</option>
+                  <option value="0">00</option>
+                  <option value="1">01</option>
+                  <option value="2">02</option>
+                  <option value="3">03</option>
+                  <option value="4">04</option>
+                  <option value="5">05</option>
+                  <option value="6">06</option>
+                  <option value="7">07</option>
+                  <option value="8">08</option>
+                  <option value="9">09</option>
+                  <option value="10">10</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-2 ">
+              <div class="shadow-textarea">
+                <input class="mytext w-100 text-center z-depth-1" id="itr" name="itr" placeholder="Enter Iterations" required type="text">
+              </div>
+            </div>
+            <div class="col-md-2">
+              <button onclick="onSubmitClick()" class="btn btn-primary w-100" id="submit" name="addsubmit" type="button" data-toggle="popover" title="Popover title" data-content="And here's some amazing content. It's very engaging. Right?"> Submit </button>
+            </div>
+          </div>
+          <div class="row mt-5">
+            <div class="tableFixHead">
+              <table class="table table-bordered" id="myTable" data-aos="zoom-out" data-aos-delay="100">
+                <thead id="table_header"></thead>
+                <tbody id="divBody"></tbody>
+              </table>
+            </div>
+          </div>
+		
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="d-flex align-items-center">
+    <div class="panel-wrap">
+      <div class="switcher-btn" onclick="switchBtn()"><i id="sbtn" class="fa-plus fa-solid"></i></div>
+      <div class="panel">
+        <div class='w-100 d-none mt-1' id='export_btn'>
+          <button class="btn btn-primary w-100" name='btn' onclick='exportToExcel()' type='button'>Export<i class="fa-solid fa-download" style="padding-left: 10%;"></i></button>
+        </div>
+        <div class="accordion" id="accordion"></div>
+      </div>
+    </div>	
+  </section>
+</main>
+<a class="back-to-top" href="#"><i class="icofont-simple-up"></i></a>
+<script src="{% static 'asset/vendor/php-email-form/validate.js' %}"></script>
+<script src="{% static 'asset/vendor/waypoints/jquery.waypoints.min.js' %}"></script>
+<script src="{% static 'asset/vendor/counterup/counterup.min.js' %}"></script>
+<script src="{% static 'asset/vendor/isotope-layout/isotope.pkgd.min.js' %}"></script>
+<script src="{% static 'asset/vendor/venobox/venobox.min.js' %}"></script>
+<script src="{% static 'asset/vendor/aos/aos.js' %}"></script>
+<script src="{% static 'asset/js/Indoor_Processor.js' %}"></script>
+<script src="{% static 'asset/js/main.js' %}"></script>
+<script type="text/javascript">
+$(document).ready(function () {
+    $(document).on("keydown", function(e) {
+        e = e || window.event;
+        if (e.ctrlKey) {
+            var c = e.which || e.keyCode;
+            if (c == 82) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+        }
+    });
+});
+</script>
+<script>
+
+document.addEventListener("contextmenu", function (e){
+    e.preventDefault();
+}, false);
+
+
+  $('#myTable tbody').on('click', 'tr', function() {
+  	var cid = $(this).attr('id');
+  	$("#myTable tbody tr").css("background", "#fff"); //reset to original color
+  	$(this).css("background", "#d5d5d5"); //apply the new color background:
+  });
+  
+     async function BindConnection(){
+          pause = "0"
+          const d = new Date();
+          let starttime = d.getTime();
+          var itr =  $("#itr").val();
+          var Trans_type =  $("#Transaction_Type").val();
+          var Token_type = $("#token_type").val();
+          var gcb_type = $("#gcb_type").val();
+          var product_count = $("#product_count").val();
+          for(let i = 1; i <= itr; i++){
+              const result = await $.ajax({
+                  type:"POST",
+                  dataType: "JSON",
+                  url: "{% url 'Instore_Testing' %}",
+                  data : {
+                  csrfmiddlewaretoken: '{{ csrf_token }}',
+                  'Trans_type': Trans_type,
+                  'gcb_type': gcb_type,
+                  'token_type' : Token_type,
+                  'product_count' : product_count,
+                  'Iteration' : i,
+              },
+              beforeSend: function() {
+                   before_data_send(i);
+               },
+                success: function(data){
+                  setTimeout(function () {
+                  Transaction_report(i, data, Trans_type, starttime);
+                  } , 500);
+                  $("#loader").remove();
+                },
+          });
+             $('#loader').show();
+             str = $('<div class="w-100 text-center p-2" id="loader"><span style="vertical-align: middle;"><i class="fa fa-solid fa-check" aria-hidden="true"></i></span><span class="m-3">Transaction completed</span></div>').hide();
+             $("#trans_progress").html(str);
+             $(str).fadeIn(1500);
+             setTimeout(function () {
+                $("#loader").remove();
+                 $('#itr').prop('disabled', false);
+                 $('#submit').prop('disabled', false);
+                 $('#Transaction_Type').prop('disabled', false);
+                 $('#export_btn').removeClass('d-none');
+             } , 1500);
+      }
+      }
+  
+</script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+{
+	"InitAESDKRequest": {
+		"POSID": "01",
+		"APPID": "04",
+		"CCTID": "01",
+		"ADSDKSpecVer": "6.14.8",
+		"SessionId": "123456789",
+		"MerchantIdentifier": "100000099206",
+		"StoreId": "101010",
+		"TerminalId": "50454898",
+		"ConfigFilePath": "D:\\Ganesh\\CircleK\\AESDK\\UAT\\AESDK v24.01.000.003\\",
+		"PEDMaps": {
+			"PEDMap": [
+				{
+					"LANENO": "1"
+				},
+				{
+					"LANENO": "2"
+				}
+			]
+		}
+	}
+}

@@ -1,0 +1,15 @@
+{
+	"CancelLastTransRequest": {
+		"POSID": "",
+		"APPID": "",
+		"CCTID": "",
+		"ADSDKSpecVer": "",
+		"SessionId": "",
+		"ClerkID": "111",
+		"TransactionType": "",
+		"ShowResponse": "0",
+		"MatchTimestampWithPreviousTransTimestamp": "",
+		"Date": "",
+		"Time": ""
+	}
+}

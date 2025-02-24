@@ -1,0 +1,11 @@
+{
+	"GetStatusRequest": {
+		"ADSDKSpecVer": "",
+		"StatusType": "",
+		"SessionId": "",
+		"POSID": "01",
+		"APPID": "01",
+		"CCTID": "01",
+		"ClerkID": "000000"
+	}
+}

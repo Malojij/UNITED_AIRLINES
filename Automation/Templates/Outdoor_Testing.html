@@ -1,0 +1,180 @@
+{% include "header.html" %}
+{% load static %}
+<!-- ======= Hero Section ======= -->
+<main id="main">
+    <section class="d-flex align-items-center" style="">
+        <div class="container" data-aos="zoom-out" data-aos-delay="100">
+            <div class="sidepanel" id="sidepanel">
+                <div class="col-md-12">
+                    <div class="row mt-5">
+                        <div class="col-md-3">
+                            <div class="shadow-textarea">
+                                <select class="mytext w-100 text-center z-depth-1" id="Transaction_Type"
+                                        name="Transaction_Type" required>
+                                    <option value="">Select Transaction</option>
+                                    <option value="00">GCB</option>
+                                    <option value="01">Sale</option>
+									<option value="02">Refund of sale</option>
+                                    <option value="04">Pre-auth</option>
+                                    <option value="05">Post-auth</option>
+                                    <option value="06">Void of pre-auth</option>
+									<option value="09">Reversal of Pre-auth</option>
+                                    <option value="05_09">Reversal of Post-auth</option>
+                                    <option value="05_01">Post-auth retry</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="shadow-textarea">
+                                <select class="mytext w-100 text-center z-depth-1" id="cds"
+                                        name="cds" required>
+                                    <option value="">Select Track Data</option>
+                                    <option value="1">Track1 data</option>
+                                    <option value="2">Track2 data</option>
+                                    <option value="4">Track1 and Track2 data</option>
+                                    <option value="5">Encrypted data</option>
+                                    <option value="6">Emv Data</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="shadow-textarea">
+                                <select class="mytext w-100 text-center z-depth-1" id="OnPinkey"
+                                        name="keys" required>
+                                    <option value="">Select OnlinePin Keys</option>
+                                    <option value="01">OmniKey Enc</option>
+                                    <option value="00">ChaseKey Enc</option>
+                                    <option value="02">FDKeys Enc</option>
+                                </select>
+                            </div>
+                         </div>
+                        <div class="col-md-2">
+                            <div class="shadow-textarea">
+                                <select class="mytext w-100 text-center z-depth-1" id="product_count" name="product_count" required>
+                                  <option value="0">Select products count</option>
+                                  <option value="0">00</option>
+                                  <option value="1">01</option>
+                                  <option value="2">02</option>
+                                  <option value="3">03</option>
+                                  <option value="4">04</option>
+                                  <option value="5">05</option>
+                                  <option value="6">06</option>
+                                  <option value="7">07</option>
+                                  <option value="8">08</option>
+                                  <option value="9">09</option>
+                                  <option value="10">10</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-primary w-100" id="submit" name="addsubmit" onclick="onSubmitClick()" type="submit">Submit </button>
+                        </div>
+                    </div>
+                    <div class="col-md-12 mt-5">
+                        <div class="row">
+                            <div class="col-md-12" id="Error"></div>
+                        </div>
+               <div class="row mt-5">
+                     <div id="message" class="d-none w-100"></div>
+                    <div class="tableFixHead">
+                        <table class="table table-bordered" id="myTable" data-aos="zoom-out" data-aos-delay="100">
+                            <thead id="table_header"></thead>
+                            <tbody id="divBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="d-flex align-items-center">
+        <div class="panel-wrap">
+            <div class="switcher-btn" onclick="switchBtn()" > <i class="fas fa-plus"></i></div>
+            <div class="panel">
+                <div class='w-100 d-none mt-1' id='export_btn'>
+                    <button class="btn btn-primary w-100" name='btn' onclick='exportToExcel()' type='button'>Export<i class='fas fa-download' style="padding-left: 10%;"></i></button>
+                </div>
+            <div class="accordion" id="accordion"></div>
+            </div>
+        </div>
+    </section>
+</main>
+<div id="preloader"></div>
+<a class="back-to-top" href="#"><i class="icofont-simple-up"></i></a>
+<script src="{% static 'asset/vendor/jquery.easing/jquery.easing.min.js' %}"></script>
+<script src="{% static 'asset/vendor/php-email-form/validate.js' %}"></script>
+<script src="{% static 'asset/vendor/waypoints/jquery.waypoints.min.js' %}"></script>
+<script src="{% static 'asset/vendor/counterup/counterup.min.js' %}"></script>
+<script src="{% static 'asset/vendor/owl.carousel/owl.carousel.min.js' %}"></script>
+<script src="{% static 'asset/vendor/isotope-layout/isotope.pkgd.min.js' %}"></script>
+<script src="{% static 'asset/vendor/venobox/venobox.min.js' %}"></script>
+<script src="{% static 'asset/vendor/aos/aos.js' %}"></script>
+<script src="{% static 'asset/js/main.js' %}"></script>
+<script src="{% static 'asset/js/Outdoor_Processor.js' %}"></script>
+<script>
+
+
+$('#myTable tbody').on('click', 'tr', function() {
+	var cid = $(this).attr('id');
+	$("#myTable tbody tr").css("background", "#fff"); //reset to original color
+	$(this).css("background", "#d5d5d5"); //apply the new color background:
+    $(this).css("box-shadow", "2px 2px 2px 1px #e3e3e3")
+});
+
+async function readExcel() {
+    const filePath = '/static/XLS/card_data_sanity.xlsx'; // Your file path
+    const gcbType = $("#gcb_type").val();
+    const transType = $("#Transaction_Type").val();
+    const cds = $("#cds").val();
+    const pbm = $("#OnPinkey").val();
+    const productCount = $("#product_count").val();
+
+    try {
+        const response = await fetch(filePath);
+        if (!response.ok) throw new Error('Network response was not ok');
+
+        const data = await response.arrayBuffer();
+        const workbook = XLSX.read(data, { type: 'array' });
+        const worksheet = workbook.Sheets[cds];
+        const jsonData = XLSX.utils.sheet_to_json(worksheet);
+
+        for (let index = 0; index < jsonData.length; index++) {
+            inIndex = index + 1;
+            updateMessage("PLEASE PERFORM TRANSACTIONS");
+            before_data_send(inIndex, " Iteration started");
+            const row = jsonData[index];
+            try {
+                const response = await $.ajax({
+                    type: "POST",
+                    dataType: "JSON",
+                    url: "{% url 'Outdoor_Testing' %}",
+                    data: {
+                        csrfmiddlewaretoken: '{{ csrf_token }}',
+                        'Trans_type': transType,
+                        'gcb_type': gcbType,
+                        'cds': cds,
+                        'pbm': pbm,
+                        'product_count': productCount,
+                        'Iteration': index + 1, // Or however you want to determine the iteration
+                        'rowData': JSON.stringify(row)
+                    }
+                });
+
+                await new Promise(resolve => setTimeout(() => {
+                    Transaction_report(response, transType, "", index + 1);
+                    resolve();
+                }, 500));
+            } catch (error) {
+                console.error('Error in AJAX call:', error);
+            } finally {
+                $('#loader').hide();
+                showLoaderMessage("Iterations Completed");
+            }
+        }
+    } catch (error) {
+        console.error('Error loading file:', error);
+    }
+}
+</script>
+</body>
+</html>

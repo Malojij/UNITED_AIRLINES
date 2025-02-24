@@ -1,0 +1,262 @@
+{% include "header.html" %}
+{% load static %}
+<!-- ======= Hero Section ======= -->
+<main id="main" xmlns="http://www.w3.org/1999/html">
+    <section class="d-flex align-items-center" style="">
+        <div class="container" data-aos="zoom-out" data-aos-delay="100">
+            <div class="sidepanel" id="sidepanel">
+                    <form method="POST" action="/Single_Outdoor_Testing" novalidate>
+                        {% csrf_token %}
+                    <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="shadow-textarea">
+                                <select class="mytext w-100 text-center z-depth-1" id="Transaction_Type" name="Transaction_Type" required>
+                                    <option value="">Select Transaction</option>
+                                    <option value="05">Post-auth</option>
+                                    <option value="05_01">Post-auth Retry</option>
+                                    <option value="05_09">Reversal of Post-auth</option>
+                                    <option value="06">Void of Pre-auth</option>
+                                    <option value="09">Reversal of Pre-auth</option>
+                                    <option value="22">CRM based Refund</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="shadow-textarea">
+                                <select class="mytext w-100 text-center z-depth-1" id="cds" name="cds" required>
+                                    <option value="">Select Track Data</option>
+                                    <option value="1">Track1 data</option>
+                                    <option value="2">Track2 data</option>
+                                    <option value="4">Track1 and Track2 data</option>
+                                    <option value="5">Encrypted data</option>
+                                    <option value="6">Emv Data</option>
+                                    <option value="7">CRM Token</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="shadow-textarea">
+                                <select class="mytext w-100 text-center z-depth-1" id="Trn_amt" name="Trn_amt" required>
+                                    <option value="">Select Transaction Amount</option>
+                                    <option value="random">Random</option>
+                                    <option value="2.03">$2.03</option>
+                                    <option value="2.78">$2.78</option>
+                                    <option value="3.26">$3.26</option>
+                                    <option value="3.27">$3.27</option>
+                                    <option value="3.28">$3.28</option>
+                                    <option value="4.41">$4.41</option>
+                                    <option value="6.34">$6.34</option>
+                                    <option value="7.67">$7.67</option>
+                                    <option value="8.64">$8.64</option>
+                                    <option value="9.63">$9.63</option>
+                                    <option value="9.64">$9.64</option>
+                                    <option value="9.65">$9.65</option>
+                                    <option value="9.66">$9.66</option>
+                                    <option value="9.67">$9.67</option>
+                                    <option value="9.68">$9.68</option>
+                                    <option value="9.69">$9.69</option>
+                                    <option value="9.70">$9.70</option>
+                                    <option value="9.71">$9.71</option>
+                                    <option value="9.72">$9.72</option>
+                                    <option value="21.64">$21.64</option>
+                                    <option value="24.41">$24.41</option>
+                                    <option value="37.88">$37.88</option>
+                                    <option value="0.00 ">$0.00 </option>
+									<option value="1.00">$1.00 </option>
+									<option value="50.00">$50.00 </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <a class="btn btn-primary w-100" onclick="Get_Transaction_Details()">Enter </a></div>
+                    </div>
+                    <div class="col-md-12 mt-5 d-none" id="card-details">
+                        <div>
+                            <h5 class="text-center" >Enter Card Details</h5>
+                            <hr>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="row">
+                            <div class="col-md-2">
+                                <input type="text" class="m-2 shadow-textarea mytext  text-center z-depth-1" id="TrackData" name="TrackData" placeholder="Enter Track data / CRM TOKEN"  required/>
+                            </div>
+                            <div class="col-md-2">
+                                <input class="m-2 shadow-textarea mytext  text-center z-depth-1" id="EmvData" name="EmvData" placeholder="Enter Emv data"  required />
+                            </div>
+                           <div class="col-md-2">
+                                <select class="m-2 shadow-textarea mytext text-center z-depth-1" id="pin" name="pin" required>
+                                    <option value="">Select Key</option>
+                                    <option value="01">Omnikey</option>
+                                    <option value="00">ChaseKey</option>
+                                    <option value="02">FdKeys</option>
+                                </select>
+                           </div>
+                           <div class="col-md-2">
+                                <input type="text" class="m-2 shadow-textarea mytext  text-center z-depth-1" id="PinBlock" name="PinBlock" placeholder="Enter PinBlock"  required/>
+                           </div>
+                            <div class="col-md-2">
+                                <input type="text" class="m-2 shadow-textarea mytext  text-center z-depth-1" id="KsnBlock" name="KsnBlock" placeholder="Enter KsnBlock"  required/>
+                            </div>
+                            <div class="col-md-2">
+                                <input type="submit" class="m-2 shadow-textarea mytext  text-center z-depth-1 btn btn-secondary " id="send_data" name="addsubmit" value="Submit" />
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                    </form>
+          	{% if Data.gcb %}
+	<div class="col-md-12 mt-5">
+        <div class="row">
+            <div class="col-md-12"> <p class="red"> <b>{{Data.ErrorText}} </b> </p> </div>
+        </div>
+		<div class="row">
+			<div class="col-md-4 tableFixHead">
+			   {% if Data.gcb %} <p class="trn">{{ Data.gcb }} </p> {% endif %}
+				<div id="owl-example" class="trndiv owl-carousel">
+					<div class="item">
+						<div>
+							<a class="float-button" id='gcb_button_req' data-toggle="tooltip" data-placement="bottom" title="Copy" onclick="copyToClipboard('#gcb_request', '#gcb_button_req')"><i class="fas fa-copy"></i></a>
+						</div>
+						<div><pre lang="xml"><code id="gcb_request"> {{ Result.gcb_request }} </code></pre></div>
+					</div>
+					<div class="item">
+						<div>
+							<a class="float-button" id='gcb_button_res' data-toggle="tooltip" data-placement="bottom" title="Copy" onclick="copyToClipboard('#gcb_response', '#gcb_button_res')"><i class="fas fa-copy"></i></a>
+						</div>
+						<pre lang="xml"><code id="gcb_response">{{ Result.gcb_response }}</code></pre>
+					</div>
+				</div>
+				<div class="shadow-textarea w-100 text-center">
+					<div data-aos-easing="ease" data-aos-duration="1000" data-aos-delay="0" class="w-100 text-center p-2" ><span style="vertical-align: middle;"><i class="fa fa-solid" aria-hidden="true"></i></span><span class="m-5" style="font-weight:600">Response Text :  {{ Data.GCBResponseText }}</span></div>
+				</div>
+				<div class="shadow-textarea w-100 text-center">
+				  	<div data-aos-easing="ease" data-aos-duration="1000" data-aos-delay="0" class="w-100 text-center p-2" ><span style="vertical-align: middle;"><i class="fa fa-solid" aria-hidden="true"></i></span><span class="m-5" style="font-weight:600">Card Type :  {{  Data.GCBCardType }}</span></div>
+				</div>
+			</div>
+			<div class="col-md-4 tableFixHead">
+				{% if Data.Parent_transaction %}<p class="trn">{{ Data.Parent_transaction }} </p>{% endif %}
+				  <div id="owl-example1" class="trndiv owl-carousel">
+					<div class="item">
+						<div>
+							<a class="float-button" id="parent_button_req" data-toggle="tooltip" data-placement="bottom" title="Copy" onclick="copyToClipboard('#parent_request', '#parent_button_req')"><i class="fas fa-copy"></i></a>
+						</div>
+						<pre><code id="parent_request">{{ Result.Parent_request }}</code></pre>
+					</div>
+					<div class="item">
+						<div>
+							<a class="float-button" id="parent_button_res" data-toggle="tooltip" data-placement="bottom" title="Copy" onclick="copyToClipboard('#parent_response', '#parent_button_res')"><i class="fas fa-copy"></i></a>
+						</div>
+						<pre><code id="parent_response">{{ Result.Parent_response }}</code></pre>
+					</div>
+				 </div>
+				  <div class="shadow-textarea w-100 text-center">
+				  <div data-aos-easing="ease" data-aos-duration="1000" data-aos-delay="0" class="w-100 text-center p-2" ><span style="vertical-align: middle;"><i class="fa fa-solid fa-check" aria-hidden="true"></i></span><span class="m-5" style="font-weight:600">Response Text :  {{ Data.ParentResponseText }}</span></div>
+				  </div>
+				  <div class="shadow-textarea w-100 text-center">
+			   <div data-aos-easing="ease" data-aos-duration="1000" data-aos-delay="0" class="w-100 text-center p-2" ><span style="vertical-align: middle;"><i class="fa fa-solid fa-check" aria-hidden="true"></i></span><span class="m-5" style="font-weight:600">TransactionID : {{ Data.ParentTransactionID }}</span></div>
+			   </div>
+			</div>
+			<div class="col-md-4 tableFixHead">
+				{% if Data.Child_transaction %}<p class="trn">{{ Data.Child_transaction }}</p>{% endif %}
+			   <div id="owl-example2" class="trndiv owl-carousel">
+					<div class="item">
+						<div>
+							<a class="float-button" id='child_button_req' data-toggle="tooltip" data-placement="bottom" title="Copy" onclick="copyToClipboard('#child_request', '#child_button_req')"><i class="fas fa-copy"></i></a>
+						</div>
+						<pre id="child_request">{{ Result.Child_request }}</pre>
+					</div>
+					<div class="item">
+						<div>
+							<a class="float-button" id='child_button_res' data-toggle="tooltip" data-placement="bottom" title="Copy" onclick="copyToClipboard('#child_response', '#child_button_res')"><i class="fas fa-copy"></i></a>
+						</div>
+						<pre id="child_response">{{ Result.Child_response }}</pre>
+					</div>
+				</div>
+			   <div class="shadow-textarea w-100 text-center">
+			   <div data-aos-easing="ease" data-aos-duration="1000" data-aos-delay="0" class="w-100 text-center p-2" ><span style="vertical-align: middle;"><i class="fa fa-solid fa-check" aria-hidden="true"></i></span><span class="m-5" style="font-weight:600">Response Text : {{ Data.ChildResponseText }}</span></div>
+			   </div>
+			   <div class="shadow-textarea w-100 text-center">
+			   <div data-aos-easing="ease" data-aos-duration="1000" data-aos-delay="0" class="w-100 text-center p-2" ><span style="vertical-align: middle;"><i class="fa fa-solid fa-check" aria-hidden="true"></i></span><span class="m-5" style="font-weight:600">TransactionID : {{ Data.ChildTransactionID }}</span></div>
+			   </div>
+			</div>
+		</div>
+	</div>
+	{% endif %}
+                </div>
+        </div>
+    </section>
+</main>
+<div id="preloader"></div>
+<a class="back-to-top" href="#"><i class="icofont-simple-up"></i></a>
+<script src="{% static 'asset/vendor/jquery.easing/jquery.easing.min.js' %}"></script>
+<script src="{% static 'asset/vendor/php-email-form/validate.js' %}"></script>
+<script src="{% static 'asset/vendor/waypoints/jquery.waypoints.min.js' %}"></script>
+<script src="{% static 'asset/vendor/counterup/counterup.min.js' %}"></script>
+<script src="{% static 'asset/vendor/isotope-layout/isotope.pkgd.min.js' %}"></script>
+<script src="{% static 'asset/vendor/venobox/venobox.min.js' %}"></script>
+<script src="{% static 'asset/vendor/aos/aos.js' %}"></script>
+<script src="{% static 'asset/js/main.js' %}"></script>
+<script>
+
+$(document).ready(function() {
+    $("body").tooltip({ selector: '[data-toggle=tooltip]' });
+});
+
+$("button").click(function(){
+  $("p").toggleClass("main");
+});
+
+function copyToClipboard(element, element2) {
+  var $temp = $("<input>");
+  $("body").append($temp);
+  $temp.val($(element).text()).select();
+  document.execCommand("copy");
+  $temp.remove();
+  $('body').find('.float-button').removeClass("float-button-click");
+  $(element2).toggleClass("float-button-click");
+}
+
+function Get_Transaction_Details(){
+    var cds = $("#cds").val();
+    console.log(cds)
+    if(cds == 1 || cds == 2 || cds == 4 || cds == 7) {
+    $('#card-details').removeClass('d-none');
+    $("#TrackData").attr("required", "true");
+
+    }
+    if(cds === 6 || cds === 17){
+    $('#card-details').removeClass('d-none');
+    $("#TrackData").attr("required", "true");
+    $("#EmvData").attr("required", "true");
+    }
+}
+
+$(".trndiv").owlCarousel({
+    autoPlay: 3000,
+    items: 3,
+    margin: 10,
+    itemsDesktop: [1199, 1],
+    itemsDesktopSmall: [979, 1],
+    navigation: true,
+    responsiveClass: true,
+    responsive: {
+        0: {
+            items: 1,
+
+        },
+        600: {
+            items: 1,
+
+        },
+        1000: {
+            items: 1,
+
+        }
+    }
+
+});
+</script>
+</body>
+</html>

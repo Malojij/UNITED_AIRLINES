@@ -1,0 +1,35 @@
+{
+	"TransRequest": {
+		"POSID": "01",
+		"APPID": "01",
+		"CCTID": "01",
+		"ADSDKSpecVer": "6.14.8",
+		"InvoiceNumber": "1234568789",
+		"ReferenceNumber": "18",
+		"ReceiptNumber": "18",
+		"ClerkID": "000000551",
+		"SignatureFlag": "N",
+		"CurrencyCode": "840",
+		"TransactionType": "",
+		"SessionId": "",
+		"CardPresent": "Y",
+		"PurchaserPresent": "Y",
+		"KeyedEntryAVSFlag": "N",
+		"GiftPurchaseAuthIndicator": "N",
+		"ProcessingMode": "0",
+		"CashBackFlag": "0",
+		"TransAmountDetails": {
+			"TenderAmount": "",
+			"TransactionTotal": "",
+			"TaxAmount": "1.00"
+		},
+		"TransactionDate": "",
+		"TransactionTime": "",
+		"TipEligible": "0",
+		"AmountNoBar": "1",
+		"OrigAurusPayTicketNum": "",
+		"OrigTransactionIdentifier": "",
+		"ShowResponse": "0",
+		"ECommerceIndicator": "N"
+	}
+}

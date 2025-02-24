@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>AURUS Officials</title>
+    <meta content="" name="description">
+    <meta content="" name="keywords">
+    {% load static %}
+	<link rel="icon" href="{% static 'asset/logo/favicon.ico' %}">
+	<link rel="manifest" href="{% static 'manifest.json' %}" />
+    <link href="{% static 'asset/css/style.css' %}" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Roboto:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+      rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" rel="stylesheet">
+    <!-- Vendor CSS Files -->
+    <link href="{% static 'asset/vendor/venobox/venobox.css' %} " rel="stylesheet">
+    <link href="{% static 'asset/vendor/aos/aos.css' %} " rel="stylesheet">
+    <link href="{% static 'asset/vendor/aos/aos.css' %} " rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.css" integrity="sha512-UTNP5BXLIptsaj5WdKFrkFov94lDx+eBvbKyoe1YAfjeRPC+gT5kyZ10kOHCfNZqEui1sxmqvodNUx3KbuYI/A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.css" integrity="sha512-OTcub78R3msOCtY3Tc6FzeDJ8N9qvQn1Ph49ou13xgA9VsH9+LRxoFU6EqLhW4+PKRfU+/HReXmSZXHEkpYoOA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"/>
+    <script charset="utf-8" src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js" integrity="sha512-bPs7Ae6pVvhOSiIcyUClR7/q2OAsRiovw4vAkX+zJbw3ShAeeqezq50RIIcIURq7Oa20rW2n2q+fyXBNcU9lrw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+</head>
+   <script>
+      function openNav() {
+        document.getElementById("myNav").style.width = "20%";
+      }
+      
+      function closeNav() {
+        document.getElementById("myNav").style.width = "0%";
+      }     
+    </script>
+    <style>
+      .app_ver{
+          position: absolute;
+          bottom: 0;
+          text-align: center;
+          width: 100%;
+          padding: 1px;
+          background: #106eea;
+          border-top-right-radius: 15px;
+          color: white;
+          font-weight: 600;
+        }
+        .w-1{
+        width : 9000px
+        }
+    </style>
+  </head>
+  <body>
+    <header id="header" class="fixed-top">
+      <div class="container d-flex align-items-center">
+        <div class="d-flex mr-auto" style="z-index:1000">
+          <a style="font-size: 30px;cursor: pointer;left: 10px;font-weight: 600;color: #484848;text-decoration: none;" onclick="openNav()">&#9776;</a>
+          <a id="hero" class="logo pl-3"  style="text-decoration:none;"><img class="logo" src="{% static 'asset/logo/aurus_logo.png' %}"></a>
+        </div>
+        <div class="trn1 d-flex ml-auto">
+          <h1 class="text-center">
+            {% if request.path|urlencode == "/" or request.path|urlencode == "/Home" %} Aurus <span>Home</span>{% endif %}
+            {% if request.path|urlencode == "/Instore_Testing"  %} Instore  {% endif %}
+            {% if request.path|urlencode == "/Other_Scenarios"  %} Inside Outdoor {% endif %}
+            {% if request.path|urlencode == "/Single_Instore_Testing" %} Single Instore  {% endif %}
+            {% if request.path|urlencode == "/Ecomm_Testing"  %} Ecomm  {% endif %}
+            {% if request.path|urlencode == "/Ewic_Testing" %} Ewic  {% endif %}
+            {% if request.path|urlencode == "/Outdoor_Testing" or request.path|urlencode == "/Outdoor_Transaction_Requests" %} Outdoor   {% endif %}
+            {% if request.path|urlencode == "/Single_Outdoor_Testing" %} Single Outdoor  {% endif %}
+            {% if request.path|urlencode == "/Transaction_Requests" %} Transaction {% endif %}
+            {% if request.path|urlencode == "/API_SEQUENCE_TESTING" %} API Sequence{% endif %}
+            {% if request.path|urlencode == "/DualProcessor" %} DUAL PROCESSOR {% endif %}
+            {% if request.path|urlencode == "/Aurus_Decryptor" %} Aurus_Decryptor {% endif %}
+            <span class="anime">Testing</span>
+          </h1>
+        </div>
+        <div id="myNav" class="overlay">
+          <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+          <div class="overlay-content">
+            <a class='dropdown-item {% if request.path|urlencode == "/" %} active {% endif %}'  href="/">HOME</a>
+            <a class='dropdown-item {% if request.path|urlencode == "/Instore_Testing" %} active {% endif %}'  href="/Instore_Testing">INSTORE TESTING</a>
+            <a class='dropdown-item {% if request.path|urlencode == "/Other_Scenarios" %} active {% endif %}' href="/Other_Scenarios">INSIDE OUTDOOR TESTING</a>
+            <a class='dropdown-item {% if request.path|urlencode == "/Single_Instore_Testing" %} active {% endif %}'  href="/Single_Instore_Testing  ">SINGLE INSTORE TESTING</a>
+            <a class='dropdown-item {% if request.path|urlencode == "/Ecomm_Testing" %} active {% endif %}'  href="/Ecomm_Testing">ECOMM TESTING</a>
+            <a class='dropdown-item {% if request.path|urlencode == "/Ewic_Testing" %} active {% endif %}' href="/Ewic_Testing">EWIC TESTING</a>
+            <a class='dropdown-item {% if request.path|urlencode == "/Outdoor_Testing" %} active {% endif %}' href="/Outdoor_Testing">OUTDOOR TESTING </a>
+            <a class='dropdown-item {% if request.path|urlencode == "/Single_Outdoor_Testing" %} active {% endif %}' href="/Single_Outdoor_Testing">OUTDOOR TESTING 2</a>
+            <a class='dropdown-item {% if request.path|urlencode == "/Transaction_Requests" %} active {% endif %}' href="/Transaction_Requests">TRANSACTION REQUESTS</a>
+            <a class='dropdown-item {% if request.path|urlencode == "/API_SEQUENCE_TESTING" %} active {% endif %}' href="/API_SEQUENCE_TESTING">API SEQUENCE TESTING</a>
+            <a class='dropdown-item {% if request.path|urlencode == "/DualProcessor" %} active {% endif %}' href="/DualProcessor">DUAL PROCESSOR </a>
+             <a class='dropdown-item {% if request.path|urlencode == "/Aurus_Decryptor" %} active {% endif %}' href="/Aurus_Decryptor">Aurus Decryptor </a>
+          </div>
+		  <div class="app_ver p-1">Application Version : {{APP_VERSION_NUMBER}}</div>
+        </div>
+      </div>
+    </header>
+    <!-- End Header -->
+    <div class="bxs d-flex m-auto" id="trans_progress"></div>

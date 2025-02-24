@@ -1,0 +1,11 @@
+{
+	"CloseTransactionRequest": {
+		"POSID": "",
+		"APPID": "",
+		"CCTID": "",
+		"ADSDKSpecVer": "",
+		"SessionId": "",
+		"CloseReasonCode": "TRANSACTION_COMPLETE",
+		"ClerkID": "111"
+	}
+}

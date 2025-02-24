@@ -1,0 +1,28 @@
+{
+	"ShowScreenRequest": {
+		"Header": "Register For CircleK",
+		"ADSDKSpecVer": "6.14.8",
+		"MessageLine1": "Loyalty Program",
+		"MessageLine2": "",
+		"MessageLine3": "",
+		"MessageLine4": "",
+		"MessageLine5": "",
+		"MessageLine6": "",
+		"ShowCheckBox": "0",
+		"CheckBoxText": "",
+		"ActivityFlag": "",
+		"ButtonMsg": {
+			"ButtonSizeFlag": "00",
+			"Button1Text": "YES",
+			"Button2Text": "NO",
+			"Button3Text": "SKIP"
+		},
+		"TimeOut": "5",
+		"LineDisplay": "1",
+		"SessionId": "",
+		"LanguageIndicator": "",
+		"POSID": "01",
+		"APPID": "01",
+		"CCTID": "01"
+	}
+}

@@ -1,0 +1,13 @@
+{
+"ByPassScreenRequest": {
+"ByPassReason": "Canceling Last Transaction",
+"ByPassOptions": "",
+"ADSDKSpecVer": "",
+"SessionId": "",
+"LanguageIndicator": "",
+"POSID": "",
+"APPID": "",
+"CCTID": "",
+"ClerkID": "000000"
+}
+}

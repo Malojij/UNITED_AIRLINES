@@ -1,0 +1,11 @@
+{
+	"RestartCCTRequest": {
+		"ADSDKSpecVer": "6.13.0",
+		"Key": "GPATIL-WIN128",
+		"SessionId": "",
+		"POSID": "01",
+		"APPID": "01",
+		"CCTID": "01",
+		"ClerkID": "000000"
+	}
+}
