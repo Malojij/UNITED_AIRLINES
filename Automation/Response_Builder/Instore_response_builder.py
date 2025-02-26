@@ -122,7 +122,7 @@ class Transaction_Processing :
 
     def displayTicket(self, productCount, bypassEnabled, bypassOption) :
         try : self.handleSocketRequest(self.Transaction_Request_Builder.CCTTicketDisplayRequest(productCount), bypassEnabled, bypassOption)
-        except Exception as e: self.ErrorText = f"Error in displayTicket: {e}\nTraceback:\n{traceback.format_exc()}"; self.CLOSETransaction()
+        except Exception : self.ErrorText = f"Error in displayTicket: {e}\nTraceback:\n{traceback.format_exc()}"; self.CLOSETransaction()
 
     def SHOWLIST(self, OptionsType, bypassEnabled, bypassOption) :
         try : self.handleSocketRequest(self.Transaction_Request_Builder.ShowListRequest(OptionsType), bypassEnabled, bypassOption)
@@ -298,11 +298,6 @@ class Transaction_Processing :
     def CLOSETransaction(self) :
         """Close the transaction."""
         try :
-           closeTransRes = self.handleSocketRequest(self.Transaction_Request_Builder.CloseTransactionRequest(), False, "")
-            if closeTransRes:
-                closeData = Excel_Operations.ConvertToJson(closeTransRes, self.isXml)
-                ResponseCode = closeData.get("CloseTransactionResponse").get("ResponseCode")
-                if not ResponseCode.startswith('0'):
-                    self.CLOSETransaction()
+           self.handleSocketRequest(self.Transaction_Request_Builder.CloseTransactionRequest(), False, "")
         except Exception as e :
             self.ErrorText = f"Error in CLOSETransaction: {e}\nTraceback:\n{traceback.format_exc()}"; print(self.ErrorText)
