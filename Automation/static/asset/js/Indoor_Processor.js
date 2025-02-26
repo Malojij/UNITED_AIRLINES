@@ -343,7 +343,7 @@ function Transaction_report(itr, data, Transaction_type) {
         itemsDesktopSmall: [979, 1], // For screens between 979px and 1199px, display 1 item
         navigation: false, // Disables navigation buttons (Next/Prev)
         responsiveClass: true, // Enables responsive class switching
-        responsive: { 0: { items: 1, }, 600: { items: 1, }, 1000: { items: 1, } }  // On screens smaller than 600/1000px, display 1 item
+        responsive: { 0: { items: 1, }, 600: { items: 1, }, 1000: { items: 1, } }  // On screens smaller than 600/1000px, display 1 i
     });
 }
     var first_row = $('<tr><td rowspan="' + rowspan + '">' + Gcb_Transaction_CardToken + '</td><td rowspan="' + rowspan + '">' + CARDNAME + '</td></tr>').hide();
