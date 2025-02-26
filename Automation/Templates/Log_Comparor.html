@@ -6,101 +6,76 @@
 <body>
 <main id="main">
     <!-- Hero Section -->
-     <section class="d-flex align-items-center" style="">
-    <div class="container" data-aos="zoom-out" data-aos-delay="100">
-      <div class="sidepanel" id="sidepanel">
-            <div class="row mt-5">
-                <form method="post" enctype="multipart/form-data" action="{% url 'Log_Comparor' %}" class="w-100">
-                    {% csrf_token %}
-                    <div class="container">
-                        <div class="form-container">
-                            <div class="row">
-                                <div class="col-md-3 mb-3">
-                                    <div style="text-align: center;" class="shadow-textarea">
-                                        <input type="file" name="file1" id="file1" class="mytext w-100 text-center z-depth-1" size="60"/>
+    <section class="d-flex align-items-center" style="">
+        <div class="container" data-aos="zoom-out" data-aos-delay="100">
+            <div class="sidepanel" id="sidepanel">
+                <div class="row mt-5">
+                        <div class="container">
+                            <div class="form-container">
+                                <div class="row">
+                                    <div class="col-md-3 mb-3">
+                                        <div style="text-align: center;" class="shadow-textarea">
+                                            <input type="file" name="file1" id="file1" class="mytext w-100 text-center z-depth-1" size="60"/>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-md-3 mb-3">
-                                     <div style="text-align: center;" class="shadow-textarea">
-                                        <input type="file" name="file2" id="file2" class="mytext w-100 text-center z-depth-1" size="60"/>
+                                    <div class="col-md-3 mb-3">
+                                        <div style="text-align: center;" class="shadow-textarea">
+                                            <input type="file" name="file2" id="file2" class="mytext w-100 text-center z-depth-1" size="60"/>
+                                        </div>
                                     </div>
-                                </div>
-                               <div class="col-md-3 mb-3">
-                                    <div class="shadow-textarea">
-                                         <select class="mytext w-100 text-center z-depth-1" id="requestType" name="requestType" required>
-                                            <option value="00">Select Request type</option>
-                                            <option value="XML">XML</option>
-                                            <option value="JSON">JSON</option>
-                                        </select>
+                                    <div class="col-md-3 mb-3">
+                                        <div style="text-align: center;" class="shadow-textarea">
+                                            <input type="text" name="patterns" id="patterns" class="mytext w-100 text-center z-depth-1" size="60" placeholder="Enter Patterns to find (comma separated if many patterns)">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-md-3 mb-3">
-                                    <button type="submit" class="btn btn-primary w-100">Upload</button>
+                                    <div class="col-md-3 mb-3">
+                                        <button type="button" class="btn btn-primary w-100" onclick="performSS()">Upload</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </form>
-            </div>
-            {% if data is not None %}
-             <div class="row mt-5">
-                <div class="table-responsive">
-                      <div id="message" class="w-100"></div>
-                    <div class="tableFixHead">
-                    <table class="table table-bordered fixed-width-table" id="myTable" data-aos="zoom-out" data-aos-delay="100" style="background: white;">
-                        <thead>
-                            <tr id="head1">
-                                <th class="col-1">#</th>
-                                <th class="col-4">FILE1 SEQUENCE</th>
-                                <th class="col-5">TIME DIFF</th>
-                                 <th class="col-5">TIME DIFF</th>
-                                <th class="col-4">FILE2 SEQUENCE</th>
-
-                            </tr>
-                        </thead>
-                        <tbody id="divBody">
-                            {% for item1 in data %}
-                                <tr id="">
-                                    <td class="col-1" id="{{ forloop.counter }}">{{ forloop.counter }}</td>
-                                    <td class="col-4" id="C">{{ item1.file1sequence }}</td>
-                                    <td class="col-5" id="dateCell">{{ item1.File1Loggers }}</td>
-                                    <td class="col-5">{{ item1.File2Loggers }}</td>
-                                    <td class="col-4" id="A">{{ item1.file2sequence }}</td>
-
+                </div>
+                <div class="row mt-5">
+                    <div class="table-responsive">
+                        <div id="message" class="w-100"></div>
+                        <div class="tableFixHead">
+                            <table class="table table-bordered fixed-width-table" id="myTable" data-aos="zoom-out" data-aos-delay="100" style="background: white;">
+                                <thead>
+                                <tr id="head1">
+                                    <th class="col-1">#</th>
+                                    <th class="col-4">FILE1 SEQUENCE</th>
+                                    <th class="col-5">TIME DIFF</th>
+                                    <th class="col-5">TIME DIFF</th>
+                                    <th class="col-4">FILE2 SEQUENCE</th>
                                 </tr>
-                            {% empty %}
-                                <tr>
-                                    <td colspan="3">No data available.</td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-
-                    </table>
+                                </thead>
+                                <tbody id="APIData">
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
-            {% endif %}
         </div>
-    </div>
     </section>
- <section class="d-flex align-items-center">
-    <div class="panel-wrap">
-      <div class="switcher-btn" onclick="switchBtn()"><i id="sbtn" class="fa-plus fa-solid"></i></div>
-      <div class="panel">
-        <div class='w-100' id='export_btn'>
-            <div class="row">
-                <div class="col-md-12 mt-2">
-                    <button class="btn btn-primary w-100" name='btn' onclick='exportToExcel("2", "", "")' type='button'> Export<i class="fa-solid fa-download" style="padding-left: 10%;"></i></button>
-                </div>
-                <div class="col-md-12 mt-2">
-                    <button class="btn btn-primary w-100" name='btn' onclick='PerformScenario()' type='button'> Perform Scenario<i class="fa fa-bullseye" style="padding-left: 10%;"></i></button>
+    <section class="d-flex align-items-center">
+        <div class="panel-wrap">
+            <div class="switcher-btn" onclick="switchBtn()"><i id="sbtn" class="fa-plus fa-solid"></i></div>
+            <div class="panel">
+                <div class='w-100' id='export_btn'>
+                    <div class="row">
+                        <div class="col-md-12 mt-2">
+                            <button class="btn btn-primary w-100" name='btn' onclick='exportToExcel("2", "", "")' type='button'> Export<i class="fa-solid fa-download" style="padding-left: 10%;"></i></button>
+                        </div>
+                        <div class="col-md-12 mt-2">
+                            <button class="btn btn-primary w-100" name='btn' onclick='PerformScenario()' type='button'> Perform Scenario<i class="fa fa-bullseye" style="padding-left: 10%;"></i></button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
         </div>
-      </div>
-    </div>
-  </section>
+    </section>
 </main>
 
 <!-- JavaScript Libraries -->
@@ -134,17 +109,36 @@
 </script>
 <script>
 
-        async function PerformScenario() {
-            const csrf = "{{ csrf_token }}"
-            const Requestdata = {{ data|safe }}
-            const RequestType = "{{ RequestType }}"
-            SortedData = createPerformableScenarios(Requestdata, RequestType)
-            timediffArray =  SortedData.timeDifferences
-            apiRequestArray = SortedData.sortedRequests
-            timestampASID =  SortedData.TimestampsAPI
-            APIKEY =  SortedData.requestKeys
-            await performAjaxCallScenarios(timediffArray, apiRequestArray, APIKEY, timestampASID, csrf)
+    async function performSS() {
+        try {
+            let file1 = $("#file1")[0].files[0];
+            let file2 = $("#file2")[0].files[0];
+            const patterns = $("#patterns").val();
+            let formData = new FormData();
+            formData.append("csrfmiddlewaretoken", "{{ csrf_token }}");
+            formData.append("file1", file1);
+            formData.append("file2", file2);
+            formData.append("patterns", patterns);
+            const response = await $.ajax({
+                type: "POST",
+                dataType: "JSON",
+                url: "{% url 'Log_Comparor' %}",
+                processData: false, // Prevent jQuery from processing the data
+                contentType: false, // Prevent jQuery from setting content type
+                data: formData
+            });
+            await new Promise(resolve => setTimeout(() => {
+                let ln = response.data.length
+                for (i = 0; i < ln; i++) {
+                    $("#APIData").append("<tr><td>"+i+"</td><td><div><pre lang='xml'>"+response.data[i].file1sequence[1]+"</pre></div></td><td><div><pre lang='xml'>"+response.data[i].file1sequence[2]+"</pre></div></td><td><div><pre lang='xml'>"+response.data[i].file2sequence[2]+"</pre></div></td><td><div><pre lang='xml'>"+response.data[i].file2sequence[1]+"</pre></div></td></tr>")
+                }
+                //   Transaction_report(iteration, response, TransType);
+                resolve();
+            }, 500));
+        } catch (error) {
+            console.error('Error in AJAX call:', error);
         }
+    }
 </script>
 </body>
 </html>

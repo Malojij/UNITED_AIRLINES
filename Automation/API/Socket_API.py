@@ -22,7 +22,7 @@ class Adsdk_Socket:
 
     def sendRequest(self, request):
         print(f"Request send :: {request}")
-        time.sleep(0.500)
+        time.sleep(0.200)
         self.sock.sendall(request.encode('utf-8'))
 
     def receiveResponseFromSocket(self):
@@ -33,16 +33,18 @@ class Adsdk_Socket:
                 break
             buf.extend(chunk)
             print(f"Response Rec :: {buf.decode('utf-8')}")
+            time.sleep(0.200)
             return buf.decode('utf-8')
 
     def httpsRequest(self, url, request, requestFormat):
         print(f"Request send :: {request}")
-        time.sleep(0.500)
+        time.sleep(0.200)
         headers = {"Content-Type": f"application/json"}
         self.httpsResponse  = requests.post(url, json=request, verify=False, headers=headers).text
 
     def receiveResponsehttps(self):
         print(f"Response Rec :: {self.httpsResponse}")
+        time.sleep(0.200)
         return self.httpsResponse
 
     def closeSocket(self): self.sock.close()

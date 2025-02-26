@@ -6,7 +6,7 @@ class Product_data_mapping:
 
     @staticmethod
     def ProductData_Mapping(Transaction_amount, cashbackAmount, Product_type, product_count):
-        CB = None if cashbackAmount is not "0.00" else cashbackAmount
+        CB = None if cashbackAmount == "0.00" else cashbackAmount
         productDict, productList = {}, []
         ProductTotalAmt = Decimal(0.00)
         unitprice = (Decimal(Transaction_amount) / Decimal(product_count)).quantize(Decimal('1.000'))

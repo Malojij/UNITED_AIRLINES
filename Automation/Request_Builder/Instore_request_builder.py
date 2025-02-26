@@ -1,12 +1,15 @@
 import datetime
 import json
 import time
+import string
 from decimal import Decimal, ROUND_HALF_UP
 
 from API.Excel_operations import Excel_Operations
 from API.Gift_Processor import Gift_processor
 from API.Product_data_mapping import Product_data_mapping
 from API.config import config
+from decimal import Decimal
+import random
 
 
 class Transaction_Request_Builder :
@@ -21,7 +24,9 @@ class Transaction_Request_Builder :
         self.APPID = "01"
         self.TodaysDate = datetime.datetime.now().strftime('%m/%d/%Y').replace("/", "")
         self.currentTime = time.strftime("%H:%M:%S:%MS", time.localtime()).replace(":", "")[:-3]
-        self.DefaultAmount = "10.00" #Decimal(Decimal((str(random.randint(0, 99)))).quantize(Decimal('1.00')))
+        int_value = random.randint(1,49)
+        dec_value = random.randint(0, 99)
+        self.DefaultAmount = Decimal(f"{int_value}.{dec_value:02d}") #Decimal(random.randint(10, 49)).quantize(Decimal('1.00'))
         self.isXml = config.request_format().upper() == "XML"
         self.ParentTransactionTypeMapping = {
             "01" : "01", "02" : "01", "03" : "01", "15" : "01", "16" : "01", "20" : "01", "06_02_01" : "01",  # for sale
@@ -198,7 +203,7 @@ class Transaction_Request_Builder :
             CardType = CardType if CardType is not None else ""
             TransactionTypeToRequest = self.ParentTransactionTypeMapping.get(TransactionTypeID)
             TransAmount = str(TransAmount) if TransAmount is not None else  str(self.DefaultAmount)
-            #TransAmount = "00.00" if TransactionTypeToRequest == "04" else TransAmount
+            #TransAmount = "10.00" if TransactionTypeToRequest == "04" else TransAmount
 
             rounded_value = str((Decimal(TransAmount) / 4).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP))
             EntrySource = "K" if AllowKeyedEntry.upper() == "Y" else ""
@@ -215,6 +220,7 @@ class Transaction_Request_Builder :
                 "ADSDKSpecVer" : self.ADSDKSpecVer,
                 "TransactionType" : TransactionTypeToRequest,
                 "EntrySource" : EntrySource,
+
                 **(
                     {"SubTransType" : "04" if TransactionTypeToRequest in ("14", "11") else "",
                      "BlackHawkUpc" : Gift_processor.BlackHawkUpc_finder(Token),
@@ -278,6 +284,7 @@ class Transaction_Request_Builder :
                 "TravelInfo": {
                     "PNRNumber": str(RandomPNR)
                 },
+
                 "TransactionType" : TransactionTypeToRequest,
                 **({
                        "ReferenceNumber" : f"{self.TodaysDate}{RandomNumber}{self.currentTime}" if CardType.upper() != "EPP" else f"{self.TodaysDate}1234",
@@ -332,3 +339,5 @@ class Transaction_Request_Builder :
             })
             self.request = Excel_Operations.ConvertToXml(data) if self.isXml else json.dumps(data)
         return self.request
+
+

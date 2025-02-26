@@ -18,6 +18,19 @@ class InstoreTesting:
         self.API_SEQUENCE = config.API_SEQUENCE().split(",")
         self.result = {}
         self.isXml = config.request_format().upper() == "XML"
+        self.api_patterns = {
+            "GETSTATUS": r"(GETSTATUSREQUEST|GETSTATUS|STATUS)(\d*)(?:\(\"(.+?)\"\))?",
+            "SHOWSCREEN": r"(SHOWSCREENREQUEST|SHOWSCREEN|SCREENREQUEST)(\d*)(?:\(\"(.+?)\"\))?",
+            "GCB": r"(GCB|GCBCHECK|GETCARDBINREQUEST|GETCARDBIN)(\d*)(?:\(\"(.+?)\"\))?",
+            "CCTTICKETDISPLAYREQUEST": r"(CCTTICKETDISPLAYREQUEST)(\d*)(?:\(\"(.+?)\"\))?",
+            "GETUSERINPUT": r"(GETUSERINPUTREQUEST|GETUSERINPUT)(\d*)(?:\(\"(.+?)\"\))?",
+            "SHOWLIST": r"(SHOWLISTREQUEST|SHOWLIST)(\d*)(?:\(\"(.+?)\"\))?",
+            "BYPASS": r"(BYPASSREQUEST|BYPASS|BYPASSSCREENREQUEST|BYPASSSCREEN)(\d*)(?:\(\"(.+?)\"\))?",
+            "TIMEDELAY": r"(TIMEDELAY|TIMEWAIT)(\d*)(?:\(\"(.+?)\"\))?",
+            "RESTARTCCTREQUEST" : r"(RESTARTCCT|RESTARTCCTREQUEST|CCTRESTART)(\d*)(?:\(\"(.+?)\"\))?",
+            "TRANSREQUEST" : r"(TRANSREQUEST|TRANSACTIONREQUEST|TRANSACTION|TRANS)(\d*)(?:\(\"(.+?)\"\))?",
+            "CLOSEREQUEST" : r"(CLOSEREQUEST|CLOSETRANSACTIONREQUEST|CLOSE|CLOSETRANS)(\d*)(?:\(\"(.+?)\"\))?"
+        }
 
     def Instore_Testing(self, request):
         # Initialize variables from config
@@ -35,44 +48,45 @@ class InstoreTesting:
             CHILDTRANSREQUEST = None
             PARENTTRANSREQUEST = None
             if transactionSequence in ("0", "1"):
-                if Transaction_type in ("01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","20","06_02_01", "04_76"):
+                if Transaction_type in ("01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","20","06_02_01"):
                     PARENTTRANSREQUEST = lambda : self.transaction_processor.ParentTransactionProcessing(AllowKeyedEntry, product_count, Token_type, Transaction_type, amount)
 
             if transactionSequence in ("0", "2"):
-                if Transaction_type in ("2","02","03","05","06","08","15","16","20", "06_02_01", "04_76"):
+                if Transaction_type in ("2","02","03","05","06","08","15","16","20", "06_02_01"):
                     CHILDTRANSREQUEST = lambda : self.transaction_processor.ChildTransactionProcessing(childData, product_count,Transaction_type, amount)
 
             print(f'Performing # {Iteration} Transaction')
             method_mapping = {
-                'GETSTATUS': lambda : self.transaction_processor.GetStatusRequest(statusType, bypassEnabled, bypassOption),
-                'TIMEDELAY': lambda : time.sleep(float(delay)),
-                'SIGNATURE': lambda : self.transaction_processor.Signature(bypassEnabled, bypassOption),
-                'SHOWLIST': lambda : self.transaction_processor.SHOWLIST(optionType, bypassEnabled, bypassOption),
-                'CCTTICKETDISPLAYREQUEST': lambda: self.transaction_processor.displayTicket(int(productList), bypassEnabled, bypassOption),
-                'GCB': lambda: self.transaction_processor.GCBTransaction(Transaction_type, AllowKeyedEntry, EntrySource, lookUpFlag, bypassEnabled, bypassOption, Token_type),
-                'GETUSERINPUT': lambda: self.transaction_processor.GETUSERINPUT(getuserinputText, getuserinputOption, bypassEnabled, bypassOption),
-                'SHOWSCREEN': lambda : self.transaction_processor.SHOWSCREEN(showMessage, showscreenFlag, bypassEnabled, bypassOption),
+                'GETSTATUS': lambda : self.transaction_processor.GetStatusRequest(int(api_number), bypassEnabled, bypassOption),
+                'TIMEDELAY': lambda : time.sleep(float(api_message)),
+                'SHOWLIST': lambda : self.transaction_processor.SHOWLIST(int(api_number), bypassEnabled, bypassOption),
+                'CCTTICKETDISPLAYREQUEST': lambda: self.transaction_processor.displayTicket(int(api_number), bypassEnabled, bypassOption),
+                'GCB': lambda: self.transaction_processor.GCBTransaction(Transaction_type, AllowKeyedEntry, EntrySource, str(api_number), bypassEnabled, bypassOption, Token_type),
+                'GETUSERINPUT': lambda: self.transaction_processor.GETUSERINPUT(str(api_message), int(api_number), bypassEnabled, bypassOption),
+                'SHOWSCREEN': lambda : self.transaction_processor.SHOWSCREEN(str(api_message), int(api_number), bypassEnabled, bypassOption),
                 'TRANSREQUEST':  [PARENTTRANSREQUEST, CHILDTRANSREQUEST],
-                'RESTARTCCTREQUEST' : lambda : self.transaction_processor.RestartCCTRequestTransaction()
+                'RESTARTCCTREQUEST' : lambda : self.transaction_processor.RestartCCTRequestTransaction(),
+                'CLOSEREQUEST' : lambda :self.transaction_processor.CLOSETransaction()
             }
 
-            for method_name in self.API_SEQUENCE:
-                method_name = method_name.upper().strip()
-                showscreenFlag = re.search(r'SHOWSCREEN(\d+)', method_name).group(1) if re.search(r'SHOWSCREEN(\d+)', method_name) else ""
-                getuserinputOption = re.search(r'GETUSERINPUT(\d+)', method_name).group(1) if re.search(r'GETUSERINPUT(\d+)', method_name) else ""
-                lookUpFlag = re.search(r'GCB(\d+)', method_name).group(1) if re.search(r'GCB(\d+)', method_name) else "4"
-                bypassOption = re.search(r'BYPASS(\d+)', method_name).group(1) if re.search(r'BYPASS(\d+)', method_name) else 0
-                bypassEnabled = 1 if "BYPASS" in method_name else ""
-                showMessage = re.search(r'SHOWSCREEN(\d+)\("(.+?)"\)', method_name).group(2) if re.search(r'SHOWSCREEN(\d+)\("(.+?)"\)', method_name) else ""
-                getuserinputText = re.search(r'GETUSERINPUT(\d+)\("(.+?)"\)', method_name).group(2) if re.search(r'GETUSERINPUT(\d+)\("(.+?)"\)', method_name) else ""
-                optionType = re.search(r'SHOWLIST(\d+)', method_name).group(1) if re.search(r'SHOWLIST(\d+)', method_name) else ""
-                productList = re.search(r'CCTTICKETDISPLAYREQUEST(\d+)', method_name).group(1) if re.search(r'CCTTICKETDISPLAYREQUEST(\d+)', method_name) else product_count
-                delay = re.search(r"TIMEDELAY\((.+?)\)", method_name).group(1) if re.search(r"TIMEDELAY\((.+?)\)", method_name) else ""
-                statusType = re.search(r'GETSTATUSREQUEST(\d+)', method_name).group(1) if re.search(r'GETSTATUSREQUEST(\d+)', method_name) else ""
-                method_name = re.sub(r"BYPASS[0-9]{1,2}", "", method_name) if re.match(r'^BYPASS\d+', method_name) else method_name
-                method_name = "RESTARTCCTREQUEST" if re.match(r'^RESTARTCCTREQUEST\d+', method_name) else "GCB" if re.match(r'^GCB\d+', method_name) else "GETSTATUS" if re.match(r'^GETSTATUSREQUEST\d+', method_name) else "GETUSERINPUT" if re.match(r'^GETUSERINPUT\d+', method_name) else "SHOWSCREEN" if re.match(r'^SHOWSCREEN\d+', method_name) else "CCTTICKETDISPLAYREQUEST" if re.match(r'^CCTTICKETDISPLAYREQUEST\d+', method_name) else "SHOWLIST" if re.match(r'^SHOWLIST\d+', method_name) else "SIGNATURE" if re.match(r'^SIGNATURE\d+', method_name) else "TIMEDELAY" if re.match(r'^TIMEDELAY', method_name) else  method_name
-                # Fetch the corresponding method from the mapping
-                method = method_mapping.get(method_name.upper().strip())
+            def extract_api_details(api_string):
+                for api_name, pattern in self.api_patterns.items():
+                    api_string = api_string.upper().strip()
+                    match = re.match(pattern, api_string, re.IGNORECASE)
+                    if match:
+                        number = match.group(2) if match.group(2) else str("4") if "BIN" in api_string else "0"
+                        message = match.group(3) if match.group(3) else "Enter Message in API"  # Extract message (optional)
+                        return api_name, number, message
+                return api_string, None, ""  # Return original name if no match
+
+            # Process each API in sequence
+            for api in self.API_SEQUENCE :
+                api_name, api_number, api_message = extract_api_details(api)
+                method_name = api_name.upper().strip()
+
+                bypassEnabled = True if "BYPASS" in method_name else False
+                bypassOption = int(re.search(r'BYPASS(\d+)', method_name).group(1)) if re.search(r'BYPASS(\d+)', method_name) else 0
+                method = method_mapping.get(method_name)
                 if isinstance(method, list):
                     for sub_method in method:
                         if sub_method is not None:
@@ -81,7 +95,6 @@ class InstoreTesting:
                     method()  # Call the function
                 else:
                     print(f"Method {method_name} not found or is not callable.")
-            print(f" ErrorText :: {self.transaction_processor.ErrorText}")
             if singleTransactionCheck == "1":
                 context = {
                     "Data": {

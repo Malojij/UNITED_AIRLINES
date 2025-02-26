@@ -36,6 +36,7 @@
 		"OrigTransactionIdentifier": "",
 		"PartialAllowed": "1",
 		"ShowResponse": "0",
-		"ECommerceIndicator": "N"
+		"ECommerceIndicator": "N",
+		"POSType": "Vulcan"
 	}
 }

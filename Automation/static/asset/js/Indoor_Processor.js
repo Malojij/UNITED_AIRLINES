@@ -289,9 +289,10 @@ function Transaction_report(itr, data, Transaction_type) {
     }
     if (Child_TransactionType != null && Child_Response != null){
         rowspan = "4"
-        ChildRequest = (Transaction_type != "20" && Transaction_type != "04_76")  ? Child_Request.TransRequest : Child_Request.CancelLastTransRequest
-        ChildResponse = (Transaction_type != "20" && Transaction_type != "04_76") ? Child_Response.TransResponse : Child_Response.CancelLastTransResponse
-        ChildTransactionDetails = (Transaction_type != "20" && Transaction_type != "04_76") ? ChildTransactionDetails = ChildResponse : (requestFormat === "JSON") ? ChildResponse?.TransDetailsData?.TransDetailData?.[0] ?? "" : ChildResponse?.TransDetailsData?.TransDetailData ?? "";
+        ChildRequest = (Transaction_type != "20" && Transaction_type != "04_76") ? Child_Request.TransRequest : Child_Request.CancelLastTransRequest;
+        transactionType = ChildRequest?.TransactionType ?? "00"
+        ChildResponse = (transactionType != "76") ? Child_Response.TransResponse : Child_Response.CancelLastTransResponse
+        ChildTransactionDetails = (transactionType == "76") ? ChildTransactionDetails = ChildResponse : (requestFormat === "JSON") ? ChildResponse?.TransDetailsData?.TransDetailData?.[0] ?? "" : ChildResponse?.TransDetailsData?.TransDetailData ?? "";
         Child_Transaction_CardNumber = ChildTransactionDetails?.CardNumber ?? ""
         Child_Transaction_CIToken = ChildTransactionDetails?.CardIdentifier ?? ""
         Child_Transaction_CRMToken = ChildTransactionDetails?.CRMToken ?? ""
@@ -335,14 +336,14 @@ function Transaction_report(itr, data, Transaction_type) {
         $("#accordion").append(Child_data);
         $(Child_data).fadeIn("slow");
 		$("#Child_owl_data" + Child_Transaction_TransactionIdentifier).owlCarousel({
-        autoPlay: 3000,
-        items: 1,
-        margin: 10,
-        itemsDesktop: [1199, 1],
-        itemsDesktopSmall: [979, 1],
-        navigation: false,
-        responsiveClass: true,
-        responsive: { 0: { items: 1, }, 600: { items: 1, }, 1000: { items: 1, } }
+        autoPlay: 3000, // Automatically transitions to the next slide every 3 seconds (3000 ms)
+        items: 1, // Displays 1 item per slide
+        margin: 10, // Adds a 10px margin between items
+        itemsDesktop: [1199, 1], // For screens 1199px wide or larger, display 1 item
+        itemsDesktopSmall: [979, 1], // For screens between 979px and 1199px, display 1 item
+        navigation: false, // Disables navigation buttons (Next/Prev)
+        responsiveClass: true, // Enables responsive class switching
+        responsive: { 0: { items: 1, }, 600: { items: 1, }, 1000: { items: 1, } }  // On screens smaller than 600/1000px, display 1 item
     });
 }
     var first_row = $('<tr><td rowspan="' + rowspan + '">' + Gcb_Transaction_CardToken + '</td><td rowspan="' + rowspan + '">' + CARDNAME + '</td></tr>').hide();

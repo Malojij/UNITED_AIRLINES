@@ -9,7 +9,6 @@ from API.Socket_API import Adsdk_Socket as socket
 from API.config import config
 from Request_Builder.Instore_request_builder import Transaction_Request_Builder
 
-
 class Transaction_Processing :
 
     def __init__(self):
@@ -44,7 +43,7 @@ class Transaction_Processing :
         self.Child_Transaction_AurusPayTicketNumber = None
 
         self.RandomNumberForInvoice = random.randint(100000, 999999)
-        self.RandomNumberForPNR = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+        self.RandomNumberForPNR = ''.join(random.sample(string.ascii_uppercase + string.digits, k=6))
         self.port = config.Config_Indoor_port()
         self.OutdoorPort = config.Config_Outdoor_port()
         self.Transaction_Request_Builder = Transaction_Request_Builder()
@@ -123,7 +122,7 @@ class Transaction_Processing :
 
     def displayTicket(self, productCount, bypassEnabled, bypassOption) :
         try : self.handleSocketRequest(self.Transaction_Request_Builder.CCTTicketDisplayRequest(productCount), bypassEnabled, bypassOption)
-        except Exception : self.ErrorText = f"Error in displayTicket: {e}\nTraceback:\n{traceback.format_exc()}"; self.CLOSETransaction()
+        except Exception as e: self.ErrorText = f"Error in displayTicket: {e}\nTraceback:\n{traceback.format_exc()}"; self.CLOSETransaction()
 
     def SHOWLIST(self, OptionsType, bypassEnabled, bypassOption) :
         try : self.handleSocketRequest(self.Transaction_Request_Builder.ShowListRequest(OptionsType), bypassEnabled, bypassOption)
@@ -299,6 +298,11 @@ class Transaction_Processing :
     def CLOSETransaction(self) :
         """Close the transaction."""
         try :
-           self.handleSocketRequest(self.Transaction_Request_Builder.CloseTransactionRequest(), False, "")
+           closeTransRes = self.handleSocketRequest(self.Transaction_Request_Builder.CloseTransactionRequest(), False, "")
+            if closeTransRes:
+                closeData = Excel_Operations.ConvertToJson(closeTransRes, self.isXml)
+                ResponseCode = closeData.get("CloseTransactionResponse").get("ResponseCode")
+                if not ResponseCode.startswith('0'):
+                    self.CLOSETransaction()
         except Exception as e :
             self.ErrorText = f"Error in CLOSETransaction: {e}\nTraceback:\n{traceback.format_exc()}"; print(self.ErrorText)
