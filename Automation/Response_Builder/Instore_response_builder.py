@@ -165,7 +165,7 @@ class Transaction_Processing :
                     self.Gcb_Transaction_Response = Excel_Operations.ConvertToJson(GCB_Transaction_res, self.isXml)
                     self.GcbResponse = self.Gcb_Transaction_Response.get("GetCardBINResponse", {})
                     self.Gcb_Transaction_ResponseCode = self.GcbResponse.get("ResponseCode", "")
-                    self.Gcb_Transaction_ResponseText = self.GcbResponse.get("ResponseeText", "")
+                    self.Gcb_Transaction_ResponseText = self.GcbResponse.get("ResponseText", "")
                     self.Gcb_Transaction_CardType = self.GcbResponse.get("CardType", "")
                     self.Gcb_Transaction_CashbackAmount = self.GcbResponse.get("CashBackAmount", "")
                     if self.Gcb_Transaction_ResponseCode.startswith("0") :
