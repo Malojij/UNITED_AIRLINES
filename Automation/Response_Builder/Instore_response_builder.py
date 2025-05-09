@@ -174,12 +174,14 @@ class Transaction_Processing :
                             self.Gcb_Transaction_CIToken = self.GcbResponse.get("ECOMMInfo", {}).get("CardIdentifier", "")
                             self.Gcb_Transaction_CRMToken = self.GcbResponse.get("CRMToken", "")
                         self.tokenForTransaction = {"01" : self.Gcb_Transaction_CardToken, "02" : self.Gcb_Transaction_CIToken, "03" : self.Gcb_Transaction_CRMToken}.get(Token_type, "")
+
                     else:
                         self.CLOSETransaction()
                 except Exception:
                     self.ErrorText = f"Error :: ==> Request/response format not matched. :: Expected ==> { 'XML' if self.isXml else 'JSON' }"
 
         except Exception as e :
+
             self.ErrorText = f"Error in GCBTransaction: {e}\nTraceback:\n{traceback.format_exc()}"
 
 
@@ -207,6 +209,7 @@ class Transaction_Processing :
                         self.Parent_Transaction_ResponseText = trans_detail.get("ResponseText", "")
                         self.Parent_Transaction_TransactionIdentifier = trans_detail.get('TransactionIdentifier', "")
                         self.Parent_Transaction_TransactionAmount = trans_detail.get('TotalApprovedAmount', "")
+                        self.Parent_Transaction_CardIdentifier =  self.Parent_Transaction_response.get("TransResponse",{}).get("TransDetailsData",{}).get("TransDetailData",{}).get("CardIdentifier", "")
                         self.isSignatureEnabled = trans_detail.get("SignatureReceiptFlag", "") if trans_detail.get("SignatureReceiptFlag", "") is not None else self.isSignatureEnabled
                         self.Parent_Transaction_AurusPayTicketNum = self.Parent_Transaction_response.get("TransResponse", {}).get("AurusPayTicketNum", "")
                         self.ParentTransactionType = "Sale" if TransType == "01" else "Pre-auth" if TransType == "04" else "Refund w/o Sale" if TransType == "02" else "Gift Transactions"

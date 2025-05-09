@@ -16,7 +16,7 @@
 		"CardPresent": "Y",
 		"PurchaserPresent": "Y",
 
-		"KeyedEntryAVSFlag": "N",
+		"KeyedEntryAVSFlag": "Y",
 		"GiftPurchaseAuthIndicator": "N",
 		"ProcessingMode": "0",
 		"CashBackFlag": "1",
@@ -37,6 +37,7 @@
 		"PartialAllowed": "1",
 		"ShowResponse": "0",
 		"ECommerceIndicator": "N",
-		"POSType": "Vulcan"
+		"SubTransType": "",
+		"POSType": "BE Bags"
 	}
 }

@@ -14,6 +14,9 @@ class config :
     def CCTID() : return config.configData.get('AESDKParameter', 'CCTID')
 
     @staticmethod
+    def AllowKeyedEntry(): return config.configData.get('AESDKParameter', 'AllowKeyedEntry')
+
+    @staticmethod
     def ADSDKSpecVer() : return config.configData.get('AESDKParameter', 'ADSDKSpecVer')
 
     @staticmethod

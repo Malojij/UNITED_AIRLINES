@@ -22,10 +22,11 @@ class Transaction_Request_Builder :
         self.ADSDKSpecVer = config.ADSDKSpecVer()
         self.languageIndicator = config.LanguageIndicator()
         self.APPID = "01"
+        self.AllowKeyedEntry = config.AllowKeyedEntry()
         self.TodaysDate = datetime.datetime.now().strftime('%m/%d/%Y').replace("/", "")
         self.currentTime = time.strftime("%H:%M:%S:%MS", time.localtime()).replace(":", "")[:-3]
-        int_value = random.randint(1,49)
-        dec_value = random.randint(0, 99)
+        int_value = random.randint(0,00)
+        dec_value = random.randint(0, 00)
         self.DefaultAmount = Decimal(f"{int_value}.{dec_value:02d}") #Decimal(random.randint(10, 49)).quantize(Decimal('1.00'))
         self.isXml = config.request_format().upper() == "XML"
         self.ParentTransactionTypeMapping = {
@@ -129,9 +130,10 @@ class Transaction_Request_Builder :
                 "MessageLine1" : ("Sale" if TransactionTypeToRequest == "01" else "Pre-auth" if TransactionTypeToRequest == "04" else "Refund w/o Sale" if TransactionTypeToRequest == "02" else "Gift" if TransactionTypeToRequest in ("11", "12", "16", "18") else "" )+" Transaction",
                 "TransactionType" : TransactionTypeToRequest if TransactionTypeToRequest == "02" else "",
                 "TenderAmount" : self.DefaultAmount,
-                "AllowKeyedEntry" : AllowKeyedEntry,
+                "AllowKeyedEntry" : self.AllowKeyedEntry,
                 "EntrySource" : EntrySource,
                 "LookUpFlag" : LookUpFlag,
+
             })
             self.request = Excel_Operations.ConvertToXml(data) if self.isXml else json.dumps(data)
         return self.request
@@ -220,6 +222,7 @@ class Transaction_Request_Builder :
                 "ADSDKSpecVer" : self.ADSDKSpecVer,
                 "TransactionType" : TransactionTypeToRequest,
                 "EntrySource" : EntrySource,
+                "SubTransType": "65" if TransAmount == "0.00" else "",
 
                 **(
                     {"SubTransType" : "04" if TransactionTypeToRequest in ("14", "11") else "",
@@ -237,6 +240,7 @@ class Transaction_Request_Builder :
                 "TransactionDate" : self.TodaysDate,
                 "TransactionTime" : self.currentTime,
             })
+
             TransAmountDetails.update({
                 "TransactionTotal" : TransAmount,
                 "TenderAmount" : TransAmount,

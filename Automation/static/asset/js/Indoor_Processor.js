@@ -29,7 +29,7 @@ function onSubmitClick() {
     $('#Transaction_Type').prop('disabled', true);
     $('#myTable').removeClass('d-none');
     if($('#gcb_type').val()  != "00" && $('#token_type').val()  != "00" && $('#Transaction_Type').val()  != "00"){
-    table_header = $('<tr id="head1"><th>CardToken</th><th>Test Card</th><th>Request</th><th>EntryMode</th><th>TransType</th><th>CardType</th><th>SubCardType</th><th>TrnsAmt</th><th>ApprovedAmt</th><th>ResponseText</th><th>ResponseCode</th><th>TransactionID</th><th>AurusPayTicketNum</th><th>ApprovalCode</th></tr>').hide();
+    table_header = $('<tr id="head1"><th>CardToken</th><th>Test Card</th><th>Request</th><th>EntryMode</th><th>TransType</th><th>CardType</th><th>CardIdentifier</th><th>TrnsAmt</th><th>PNR</th><th>ResponseText</th><th>ResponseCode</th><th>TransactionID</th><th>AurusPayTicketNum</th><th>ApprovalCode</th></tr>').hide();
     $("#table_header").html(table_header);
     $(table_header).fadeIn("slow");
         setTimeout(function() {
@@ -222,12 +222,12 @@ function Transaction_report(itr, data, Transaction_type) {
         Gcb_LookupFlag = GCBRquest?.LookUpFlag ?? "";
         Gcb_Transaction_CardEntryMode = GCBResponse?.CardEntryMode ?? "";
         Gcb_Transaction_CardType = GCBResponse?.CardType ?? "";
-        Gcb_Transaction_SubCardType = GCBResponse?.SubCardType ?? "";
+        Gcb_Transaction_CardIdentifier = GCBResponse?.CardIdentifier ?? "";
         Gcb_Transaction_ResponseText = GCBResponse?.ResponseText ?? "";
         Gcb_Transaction_ResponseCode = GCBResponse?.ResponseCode ?? "";
 		Gcb_Transaction_NonFinancialToken = GCBResponse?.NonFinancialToken ?? "";
-		CARDNAME =  GCBResponse?.FirstName ?? "";
-        gcbRow = $('<tr><td>' + "GCB" + Gcb_LookupFlag +'</td><td>' + Gcb_Transaction_CardEntryMode + '</td><td>' + Gcb_Transaction_NonFinancialToken + '</td><td>' + Gcb_Transaction_CardType + '</td><td>' + Gcb_Transaction_SubCardType + '</td><td>' + GCB_UNKN + '</td><td>' + GCB_UNKN + '</td><td>' + Gcb_Transaction_ResponseText + '</td><td>' + Gcb_Transaction_ResponseCode + '</td><td>' + GCB_UNKN + '</td><td>' + GCB_UNKN + '</td><td>' + GCB_UNKN + '</td></tr>').hide();
+		//CARDNAME =  GCBResponse?.FirstName ?? "";
+        gcbRow = $('<tr><td>' + "GCB" + Gcb_LookupFlag +'</td><td>' + Gcb_Transaction_CardEntryMode + '</td><td>' + Gcb_Transaction_NonFinancialToken + '</td><td>' + Gcb_Transaction_CardType + '</td><td>' + Gcb_Transaction_CardIdentifier + '</td><td>' + GCB_UNKN + '</td><td>' + GCB_UNKN + '</td><td>' + Gcb_Transaction_ResponseText + '</td><td>' + Gcb_Transaction_ResponseCode + '</td><td>' + GCB_UNKN + '</td><td>' + GCB_UNKN + '</td><td>' + GCB_UNKN + '</td></tr>').hide();
    }
     if (Parent_TransactionType != null &&  Parent_Response != null) {
         rowspan = "3"
@@ -235,7 +235,7 @@ function Transaction_report(itr, data, Transaction_type) {
         ParentResponse = Parent_Response.TransResponse
         ParentTransactionDetails = (requestFormat === "JSON") ? ParentResponse.TransDetailsData.TransDetailData[0] : ParentResponse.TransDetailsData.TransDetailData;
         if(CARDNAME == null || CARDNAME == ""){
-            CARDNAME = ParentTransactionDetails.CustomerName;
+            CARDNAME = ParentResponse.TransDetailsData.TransDetailData.CustomerName
         }
         Parent_Transaction_CardNumber = ParentTransactionDetails.CardNumber;
         Parent_Transaction_CIToken = ParentTransactionDetails.CardIdentifier;
@@ -245,9 +245,10 @@ function Transaction_report(itr, data, Transaction_type) {
         Parent_Transaction_TransactionSequenceNumber = ParentTransactionDetails.TransactionSequenceNumber;
         Parent_Transaction_CardType = ParentTransactionDetails.CardType;
         Parent_Transaction_BalAmount = ParentTransactionDetails.BalanceAmount;
-        Parent_Transaction_SubCardType = ParentTransactionDetails.SubCardType;
+        Parent_Transaction_CardIdentifier = ParentTransactionDetails.CardIdentifier;
         Parent_Transaction_requestAmount = parentRequest.TransAmountDetails.TransactionTotal;
-        Parent_Transaction_TransactionAmount = ParentTransactionDetails.TotalApprovedAmount;
+        //Parent_Transaction_TransactionAmount = ParentTransactionDetails.TotalApprovedAmount;
+        Parent_Transaction_PNR = ParentResponse.TransDetailsData.TransDetailData?.TravelInfo?.PNRNumber?? " ";
         Parent_Transaction_ResponseText = ParentTransactionDetails.ResponseText;
         Parent_Transaction_ResponseCode = ParentTransactionDetails.ResponseCode;
         Parent_Transaction_TransactionIdentifier = ParentTransactionDetails?.TransactionIdentifier ?? "";
@@ -271,7 +272,7 @@ function Transaction_report(itr, data, Transaction_type) {
         }
         const ResponseTextcolor = Parent_Transaction_ResponseText === "APPROVAL"  ? "green" : "red";
         let tcolor = (Parent_Transaction_TransactionIdentifier?.length === 18) ? "green" : "red";
-        parentRow = $('<tr><td>' + Parent_TransactionType + '</td><td>' + Parent_Transaction_CardEntryMode + '</td><td>' + Parent_Transaction_TransactionTypeCode + '</td><td>' + Parent_Transaction_CardType + '</td><td>' + Parent_Transaction_SubCardType + '</td><td>' + Parent_Transaction_requestAmount + '</td><td>' + Parent_Transaction_TransactionAmount + '</td><td style="color:' + ResponseTextcolor + '">' + Parent_Transaction_ResponseText +  '</td><td> ' + Parent_Transaction_ResponseCode + '<td style="color:' + tcolor + '">' + Parent_Transaction_TransactionIdentifier + '</td><td>' + Parent_Transaction_AurusPayTicketNum + '</td><td>' + Parent_Transaction_ApprovalCode + '</td></tr>').hide();
+        parentRow = $('<tr><td>' + Parent_TransactionType + '</td><td>' + Parent_Transaction_CardEntryMode + '</td><td>' + Parent_Transaction_TransactionTypeCode + '</td><td>' + Parent_Transaction_CardType + '</td><td>' + Parent_Transaction_CardIdentifier + '</td><td>' + Parent_Transaction_requestAmount + '</td><td>' + Parent_Transaction_PNR + '</td><td style="color:' + ResponseTextcolor + '">' + Parent_Transaction_ResponseText +  '</td><td> ' + Parent_Transaction_ResponseCode + '<td style="color:' + tcolor + '">' + Parent_Transaction_TransactionIdentifier + '</td><td>' + Parent_Transaction_AurusPayTicketNum + '</td><td>' + Parent_Transaction_ApprovalCode + '</td></tr>').hide();
         var Parent_owl_data = '<div id="Parent_owl_data' + Parent_Transaction_TransactionIdentifier + '" class="owl-carousel"><div class="item"><p class="text-center">' + ' GCB RESPONSE ' + '</p><hr><pre><code>' + JSON.stringify(GCB_response, null, 4) + '</code></pre></div><div class="item"><p class="text-center">' + ' Receipt ' + '</p><hr><pre><code>' + Parent_Transaction_ReceiptInfo + '</code></pre></div><div class="item"><p class="text-center">' + ' Products ' + '</p><hr><pre><code>' + Parent_Transaction_Products + '</code></pre></div><div class="item"><p class="text-center">' + ' FleetPromptsData ' + '</p><hr><pre><code>' + Parent_Transaction_FleetPromptsData + '</code></pre></div></div>'
         var Parent_data = $('<div class="card ' + ResponseTextcolor + '"><div class="card-header" data-toggle="collapse" href="#collapse_' + Parent_Transaction_TransactionIdentifier + '"><a class="card-link"># ' + Parent_TransactionType + ' Transaction ' + Parent_Transaction_TransactionIdentifier + '</a><i class="fa-solid fa-chevron-down fa-style"></i></div><div id="collapse_' + Parent_Transaction_TransactionIdentifier + '" class="collapse" data-parent="#accordion"><div class="card-body">' + Parent_owl_data + '</div></div></div>').hide();
         $("#accordion").append(Parent_data);
@@ -300,9 +301,10 @@ function Transaction_report(itr, data, Transaction_type) {
         Child_Transaction_TransactionTypeCode = ChildTransactionDetails?.TransactionTypeCode ?? ""
         Child_Transaction_TransactionSequenceNumber = ChildTransactionDetails?.TransactionSequenceNumber ?? ""
         Child_Transaction_CardType = ChildTransactionDetails?.CardType ?? ""
-        Child_Transaction_SubCardType = ChildTransactionDetails?.SubCardType ?? ""
+        Child_Transaction_CardIdentifier = ChildResponse?.TransDetailsData?.TransDetailData?.CardIdentifier ?? ""
         Child_Transaction_requestAmount = ChildRequest?.TransAmountDetails?.TransactionTotal ?? ""
-        Child_Transaction_TransactionAmount = ChildTransactionDetails?.TotalApprovedAmount ?? ""
+        //Child_Transaction_TransactionAmount = ChildTransactionDetails?.TotalApprovedAmount ?? ""
+        Child_Transaction_PNR = ChildResponse?.TransDetailsData?.TransDetailData?.TravelInfo?.PNRNumber ?? ""
         Child_Transaction_ResponseText = ChildTransactionDetails?.ResponseText ?? ""
         Child_Transaction_ResponseCode = ChildTransactionDetails?.ResponseCode ?? ""
         Child_Transaction_TransactionIdentifier = ChildTransactionDetails?.TransactionIdentifier ?? ""
@@ -330,7 +332,7 @@ function Transaction_report(itr, data, Transaction_type) {
             var Child_Transaction_ResponseText = "<p style='color:red'>" + Child_Transaction_ResponseText + "</p>"
         }
         let tcolor = (Child_Transaction_TransactionIdentifier?.length === 18) ? "green" : "red";
-        childRow = $('<tr><td>' + Child_TransactionType + '</td><td>' + Child_Transaction_CardEntryMode + '</td><td>' + Child_Transaction_TransactionTypeCode + '</td><td>' + Child_Transaction_CardType + '</td><td>' + Child_Transaction_SubCardType + '</td><td>' + Child_Transaction_requestAmount + '</td><td>' + Child_Transaction_TransactionAmount + '</td><td>' + Child_Transaction_ResponseText + '</td><td> ' + Child_Transaction_ResponseCode + '</td><td>' + Child_Transaction_TransactionIdentifier + '</td><td>' + Child_Transaction_AurusPayTicketNum + '</td><td>' + Child_Transaction_ApprovalCode + '</td></tr>').hide();
+        childRow = $('<tr><td>' + Child_TransactionType + '</td><td>' + Child_Transaction_CardEntryMode + '</td><td>' + Child_Transaction_TransactionTypeCode + '</td><td>' + Child_Transaction_CardType + '</td><td>' + Child_Transaction_CardIdentifier + '</td><td>' + Child_Transaction_requestAmount + '</td><td>' + Child_Transaction_PNR + '</td><td>' + Child_Transaction_ResponseText + '</td><td> ' + Child_Transaction_ResponseCode + '</td><td>' + Child_Transaction_TransactionIdentifier + '</td><td>' + Child_Transaction_AurusPayTicketNum + '</td><td>' + Child_Transaction_ApprovalCode + '</td></tr>').hide();
         var Child_owl_data = '<div id="Child_owl_data' + Child_Transaction_TransactionIdentifier + '" class="owl-carousel"><div class="item"><p class="text-center">' + ' Receipt ' + '</p><hr><pre><code>' + Child_Transaction_ReceiptInfo + '</code></pre></div><div class="item"><p class="text-center">' + ' Products ' + '</p><hr><pre><code>' + Child_Transaction_Products + '</code></pre></div><div class="item"><p class="text-center">' + ' FleetPromptsData ' + '</p><hr><pre><code>' + Child_Transaction_FleetPromptsData + '</code></pre></div></div>'
         var Child_data = $('<div class="card ' + Child_color + '"><div class="card-header" data-toggle="collapse" href="#collapse_' + Child_Transaction_TransactionIdentifier + '"><a class="card-link"># ' + Child_TransactionType + ' Transaction ' + Child_Transaction_TransactionIdentifier + '</a><i class="fa-solid fa-chevron-down fa-style"></i></div><div id="collapse_' + Child_Transaction_TransactionIdentifier + '" class="collapse" data-parent="#accordion"><div class="card-body">' + Child_owl_data + '</div></div></div>').hide();
         $("#accordion").append(Child_data);
