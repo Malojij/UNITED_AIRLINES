@@ -8,7 +8,7 @@ from django.shortcuts import render
 
 from API.config import config
 from Response_Builder.Instore_response_builder import Transaction_Processing
-
+import logging
 
 class InstoreTesting:
 
@@ -32,6 +32,7 @@ class InstoreTesting:
             "CLOSEREQUEST" : r"(CLOSEREQUEST|CLOSETRANSACTIONREQUEST|CLOSE|CLOSETRANS)(\d*)(?:\(\"(.+?)\"\))?"
         }
 
+    print(f"------------------------------------------------------------------------------------------------------------------------------------------------------------")
     def Instore_Testing(self, request):
         # Initialize variables from config
         if request.method == 'POST':
@@ -55,7 +56,7 @@ class InstoreTesting:
                 if Transaction_type in ("2","02","03","05","06","08","15","16","20", "06_02_01"):
                     CHILDTRANSREQUEST = lambda : self.transaction_processor.ChildTransactionProcessing(childData, product_count,Transaction_type, amount)
 
-            print(f'Performing # {Iteration} Transaction')
+            logging.info(f'Performing # {Iteration} Transaction')
             method_mapping = {
                 'GETSTATUS': lambda : self.transaction_processor.GetStatusRequest(int(api_number), bypassEnabled, bypassOption),
                 'TIMEDELAY': lambda : time.sleep(float(api_message)),

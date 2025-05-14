@@ -16,7 +16,7 @@
 		"CardPresent": "Y",
 		"PurchaserPresent": "Y",
 
-		"KeyedEntryAVSFlag": "Y",
+		"KeyedEntryAVSFlag": "",
 		"GiftPurchaseAuthIndicator": "N",
 		"ProcessingMode": "0",
 		"CashBackFlag": "1",
@@ -38,6 +38,6 @@
 		"ShowResponse": "0",
 		"ECommerceIndicator": "N",
 		"SubTransType": "",
-		"POSType": "BE Bags"
+		"POSType": ""
 	}
 }

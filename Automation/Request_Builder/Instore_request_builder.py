@@ -23,10 +23,11 @@ class Transaction_Request_Builder :
         self.languageIndicator = config.LanguageIndicator()
         self.APPID = "01"
         self.AllowKeyedEntry = config.AllowKeyedEntry()
+        self.KeyedEntryAVSFlag = config.KeyedEntryAVSFlag()
         self.TodaysDate = datetime.datetime.now().strftime('%m/%d/%Y').replace("/", "")
         self.currentTime = time.strftime("%H:%M:%S:%MS", time.localtime()).replace(":", "")[:-3]
-        int_value = random.randint(0,00)
-        dec_value = random.randint(0, 00)
+        int_value = random.randint(0,250)
+        dec_value = random.randint(0, 99)
         self.DefaultAmount = Decimal(f"{int_value}.{dec_value:02d}") #Decimal(random.randint(10, 49)).quantize(Decimal('1.00'))
         self.isXml = config.request_format().upper() == "XML"
         self.ParentTransactionTypeMapping = {
@@ -91,7 +92,7 @@ class Transaction_Request_Builder :
                 "APPID" : self.APPID,
                 "SessionId" : self.SessionId,
                 "ADSDKSpecVer" : self.ADSDKSpecVer,
-                "StatusType" : Type
+                "StatusType" : "2"
             })
             self.request = Excel_Operations.ConvertToXml(data) if self.isXml else json.dumps(data)
         return self.request
@@ -129,7 +130,7 @@ class Transaction_Request_Builder :
                 "languageIndicator" : self.languageIndicator,
                 "MessageLine1" : ("Sale" if TransactionTypeToRequest == "01" else "Pre-auth" if TransactionTypeToRequest == "04" else "Refund w/o Sale" if TransactionTypeToRequest == "02" else "Gift" if TransactionTypeToRequest in ("11", "12", "16", "18") else "" )+" Transaction",
                 "TransactionType" : TransactionTypeToRequest if TransactionTypeToRequest == "02" else "",
-                "TenderAmount" : self.DefaultAmount,
+                #"TenderAmount" : self.DefaultAmount,
                 "AllowKeyedEntry" : self.AllowKeyedEntry,
                 "EntrySource" : EntrySource,
                 "LookUpFlag" : LookUpFlag,
@@ -197,7 +198,8 @@ class Transaction_Request_Builder :
             self.request = Excel_Operations.ConvertToXml(data) if self.isXml else json.dumps(data)
         return self.request
 
-    def Parent_Transaction(self,AllowKeyedEntry, Token_type, TransactionTypeID, Token, CardType, productCount, RandomNumber, TransAmount, cashbackAmount, RandomPNR) :
+    def Parent_Transaction(self, AllowKeyedEntry, Token_type, TransactionTypeID, Token, CardType, productCount, RandomNumber, TransAmount, cashbackAmount, RandomPNR
+                           ) :
         data = Excel_Operations.readIndoorFile("TransRequest.txt")
         if data :
             Token_type = Token_type if Token_type is not None else ""
@@ -206,7 +208,6 @@ class Transaction_Request_Builder :
             TransactionTypeToRequest = self.ParentTransactionTypeMapping.get(TransactionTypeID)
             TransAmount = str(TransAmount) if TransAmount is not None else  str(self.DefaultAmount)
             #TransAmount = "10.00" if TransactionTypeToRequest == "04" else TransAmount
-
             rounded_value = str((Decimal(TransAmount) / 4).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP))
             EntrySource = "K" if AllowKeyedEntry.upper() == "Y" else ""
             Parent = data["TransRequest"]
@@ -215,6 +216,8 @@ class Transaction_Request_Builder :
                 "APPID" : self.APPID,
                 "POSID" : self.POSID,
                 "CCTID" : self.CCTID,
+                "KeyedEntryAVSFlag" : self.KeyedEntryAVSFlag,
+                "POSType" : config.POSType(),
                 "TravelInfo": {
                     "PNRNumber": str(RandomPNR)
                 },
@@ -222,7 +225,7 @@ class Transaction_Request_Builder :
                 "ADSDKSpecVer" : self.ADSDKSpecVer,
                 "TransactionType" : TransactionTypeToRequest,
                 "EntrySource" : EntrySource,
-                "SubTransType": "65" if TransAmount == "0.00" else "",
+                "SubTransType": "30" if TransAmount == "0.00" else "",
 
                 **(
                     {"SubTransType" : "04" if TransactionTypeToRequest in ("14", "11") else "",
@@ -243,7 +246,12 @@ class Transaction_Request_Builder :
 
             TransAmountDetails.update({
                 "TransactionTotal" : TransAmount,
-                "TenderAmount" : TransAmount,
+                #"TenderAmount" : "0.10" if config.Env().upper() == "PROD" else TransAmount,
+                "TenderAmount" : ("0.00" if config.Env().upper() == "PROD" and self.KeyedEntryAVSFlag == "Y"
+                else "0.10" if config.Env().upper() == "PROD"
+                else "0.00" if self.KeyedEntryAVSFlag == "Y"
+                else TransAmount),
+
                 **({"EbtAmount" : TransAmount} if CardType.upper() == "EBF" else {}),
                 **({'PrescriptionAmount' : rounded_value,
                     'CoPaymentAmount' : rounded_value,

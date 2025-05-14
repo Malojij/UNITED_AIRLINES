@@ -5,6 +5,10 @@ import requests
 
 from API.config import config
 
+import logging
+
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
 
 class Adsdk_Socket:
 
@@ -21,7 +25,7 @@ class Adsdk_Socket:
         self.sock.connect(server_address)
 
     def sendRequest(self, request):
-        print(f"Request send :: {request}")
+        logging.info(f"REQUEST SENT :: {request}")
         time.sleep(0.200)
         self.sock.sendall(request.encode('utf-8'))
 
@@ -32,18 +36,19 @@ class Adsdk_Socket:
             if not chunk:
                 break
             buf.extend(chunk)
-            print(f"Response Rec :: {buf.decode('utf-8')}")
+            logging.info(f"RESPONSE RECEIVED :: {buf.decode('utf-8')}")
             time.sleep(0.200)
             return buf.decode('utf-8')
 
+
     def httpsRequest(self, url, request, requestFormat):
-        print(f"Request send :: {request}")
+        logging.info(f"REQUEST SENT :: {request}")
         time.sleep(0.200)
         headers = {"Content-Type": f"application/json"}
         self.httpsResponse  = requests.post(url, json=request, verify=False, headers=headers).text
 
     def receiveResponsehttps(self):
-        print(f"Response Rec :: {self.httpsResponse}")
+        logging.info(f"RESPONSE RECEIVED :: {self.httpsResponse}")
         time.sleep(0.200)
         return self.httpsResponse
 

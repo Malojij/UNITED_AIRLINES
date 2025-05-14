@@ -9,6 +9,7 @@ from API.Socket_API import Adsdk_Socket as socket
 from API.config import config
 from Request_Builder.Instore_request_builder import Transaction_Request_Builder
 
+
 class Transaction_Processing :
 
     def __init__(self):
@@ -59,6 +60,7 @@ class Transaction_Processing :
         self.ChildTransactionType = ""
         self.ErrorText = ""
         self.tokenForTransaction = ""
+        self.POSType = config.POSType()
 
     def handleSocketRequest(self, request_data, bypassEnabled, bypassOption) :
         if not self.isXml: request_data = json.loads(request_data)
@@ -185,7 +187,7 @@ class Transaction_Processing :
             self.ErrorText = f"Error in GCBTransaction: {e}\nTraceback:\n{traceback.format_exc()}"
 
 
-    def ParentTransactionProcessing(self,AllowKeyedEntry, productCount, Token_type, TransactionType, TransAmount) :
+    def ParentTransactionProcessing(self, AllowKeyedEntry, productCount, Token_type, TransactionType, TransAmount) :
         try :
 
             if self.Gcb_Transaction_ResponseCode is None or self.Gcb_Transaction_ResponseCode.startswith("0") :
@@ -196,7 +198,7 @@ class Transaction_Processing :
                     TransAmount=TransAmount, cashbackAmount=self.Gcb_Transaction_CashbackAmount
 
                 )
-                print("PNR:: ", self.RandomNumberForPNR)
+
                 Parent_Transaction_res = self.handleSocketRequest(Parent_Transaction_req, False, "")
                 if Parent_Transaction_res:
                     try :
@@ -213,6 +215,11 @@ class Transaction_Processing :
                         self.isSignatureEnabled = trans_detail.get("SignatureReceiptFlag", "") if trans_detail.get("SignatureReceiptFlag", "") is not None else self.isSignatureEnabled
                         self.Parent_Transaction_AurusPayTicketNum = self.Parent_Transaction_response.get("TransResponse", {}).get("AurusPayTicketNum", "")
                         self.ParentTransactionType = "Sale" if TransType == "01" else "Pre-auth" if TransType == "04" else "Refund w/o Sale" if TransType == "02" else "Gift Transactions"
+                        print(f"------------------------------------------------------------------------------------------------------")
+                        print(f"Card Type:: {self.Gcb_Transaction_CardType}          PNR:: {self.RandomNumberForPNR}         AMT:: {self.Parent_Transaction_TransactionAmount}")
+                        print(f"TransID/ TicketNo:: {self.Parent_Transaction_TransactionIdentifier}/ {self.Parent_Transaction_AurusPayTicketNum}")
+                        print(f"CI:: {self.Parent_Transaction_CardIdentifier} -         Pos Type:: {self.POSType} ")
+                        print(f"------------------------------------------------------------------------------------------------------")
                         if TransactionType not in ["20", "04_76"]:
                             self.CLOSETransaction()
                     except Exception:
@@ -221,6 +228,8 @@ class Transaction_Processing :
         except Exception as e :
             self.ErrorText = f"Error in TransRequest: {e}\nTraceback:\n{traceback.format_exc()}"; print(self.ErrorText)
             self.CLOSETransaction()
+
+
 
     print("\n")
     def ChildTransactionProcessing(self, childData, productCount, Child_TransactionType, TransAmount) :

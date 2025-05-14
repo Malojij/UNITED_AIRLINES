@@ -23,10 +23,19 @@ class config :
     def SessionId() : return config.configData.get('AESDKParameter', 'SessionId')
 
     @staticmethod
+    def KeyedEntryAVSFlag(): return config.configData.get('AESDKParameter', 'KeyedEntryAVSFlag')
+
+    @staticmethod
     def LanguageIndicator() : return config.configData.get('AESDKParameter', 'LanguageIndicator')
 
     @staticmethod
+    def POSType(): return config.configData.get('AESDKParameter', 'POSType')
+
+    @staticmethod
     def commProtocol() : return config.configData.get('SensitiveData', 'wrap_comm_type')
+
+    @staticmethod
+    def Env(): return config.configData.get('SensitiveData', 'Env')
 
     @staticmethod
     def Instore_file_path() : return config.configData.get('SensitiveData', 'Instore_file_path')
