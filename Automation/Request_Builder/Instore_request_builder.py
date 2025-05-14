@@ -246,10 +246,9 @@ class Transaction_Request_Builder :
 
             TransAmountDetails.update({
                 "TransactionTotal" : TransAmount,
-                #"TenderAmount" : "0.10" if config.Env().upper() == "PROD" else TransAmount,
-                "TenderAmount" : ("0.00" if config.Env().upper() == "PROD" and self.KeyedEntryAVSFlag == "Y"
+               "TenderAmount" : ("1.00" if config.Env().upper() == "PROD" and self.KeyedEntryAVSFlag == "Y"
                 else "0.10" if config.Env().upper() == "PROD"
-                else "0.00" if self.KeyedEntryAVSFlag == "Y"
+                else "1.00" if self.KeyedEntryAVSFlag == "Y"
                 else TransAmount),
 
                 **({"EbtAmount" : TransAmount} if CardType.upper() == "EBF" else {}),

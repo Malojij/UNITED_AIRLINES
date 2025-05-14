@@ -247,7 +247,7 @@ function Transaction_report(itr, data, Transaction_type) {
         Parent_Transaction_BalAmount = ParentTransactionDetails.BalanceAmount;
         Parent_Transaction_CardIdentifier = ParentTransactionDetails.CardIdentifier;
         Parent_Transaction_requestAmount = parentRequest.TransAmountDetails.TransactionTotal;
-        //Parent_Transaction_TransactionAmount = ParentTransactionDetails.TotalApprovedAmount;
+        Parent_Transaction_TransactionAmount = ParentTransactionDetails.TotalApprovedAmount;
         Parent_Transaction_PNR = ParentResponse.TransDetailsData.TransDetailData?.TravelInfo?.PNRNumber?? " ";
         Parent_Transaction_ResponseText = ParentTransactionDetails.ResponseText;
         Parent_Transaction_ResponseCode = ParentTransactionDetails.ResponseCode;
@@ -272,7 +272,7 @@ function Transaction_report(itr, data, Transaction_type) {
         }
         const ResponseTextcolor = Parent_Transaction_ResponseText === "APPROVAL"  ? "green" : "red";
         let tcolor = (Parent_Transaction_TransactionIdentifier?.length === 18) ? "green" : "red";
-        parentRow = $('<tr><td>' + Parent_TransactionType + '</td><td>' + Parent_Transaction_CardEntryMode + '</td><td>' + Parent_Transaction_TransactionTypeCode + '</td><td>' + Parent_Transaction_CardType + '</td><td>' + Parent_Transaction_CardIdentifier + '</td><td>' + Parent_Transaction_requestAmount + '</td><td>' + Parent_Transaction_PNR + '</td><td style="color:' + ResponseTextcolor + '">' + Parent_Transaction_ResponseText +  '</td><td> ' + Parent_Transaction_ResponseCode + '<td style="color:' + tcolor + '">' + Parent_Transaction_TransactionIdentifier + '</td><td>' + Parent_Transaction_AurusPayTicketNum + '</td><td>' + Parent_Transaction_ApprovalCode + '</td></tr>').hide();
+        parentRow = $('<tr><td>' + Parent_TransactionType + '</td><td>' + Parent_Transaction_CardEntryMode + '</td><td>' + Parent_Transaction_TransactionTypeCode + '</td><td>' + Parent_Transaction_CardType + '</td><td>' + Parent_Transaction_CardIdentifier + '</td><td>' + Parent_Transaction_TransactionAmount + '</td><td>' + Parent_Transaction_PNR + '</td><td style="color:' + ResponseTextcolor + '">' + Parent_Transaction_ResponseText +  '</td><td> ' + Parent_Transaction_ResponseCode + '<td style="color:' + tcolor + '">' + Parent_Transaction_TransactionIdentifier + '</td><td>' + Parent_Transaction_AurusPayTicketNum + '</td><td>' + Parent_Transaction_ApprovalCode + '</td></tr>').hide();
         var Parent_owl_data = '<div id="Parent_owl_data' + Parent_Transaction_TransactionIdentifier + '" class="owl-carousel"><div class="item"><p class="text-center">' + ' GCB RESPONSE ' + '</p><hr><pre><code>' + JSON.stringify(GCB_response, null, 4) + '</code></pre></div><div class="item"><p class="text-center">' + ' Receipt ' + '</p><hr><pre><code>' + Parent_Transaction_ReceiptInfo + '</code></pre></div><div class="item"><p class="text-center">' + ' Products ' + '</p><hr><pre><code>' + Parent_Transaction_Products + '</code></pre></div><div class="item"><p class="text-center">' + ' FleetPromptsData ' + '</p><hr><pre><code>' + Parent_Transaction_FleetPromptsData + '</code></pre></div></div>'
         var Parent_data = $('<div class="card ' + ResponseTextcolor + '"><div class="card-header" data-toggle="collapse" href="#collapse_' + Parent_Transaction_TransactionIdentifier + '"><a class="card-link"># ' + Parent_TransactionType + ' Transaction ' + Parent_Transaction_TransactionIdentifier + '</a><i class="fa-solid fa-chevron-down fa-style"></i></div><div id="collapse_' + Parent_Transaction_TransactionIdentifier + '" class="collapse" data-parent="#accordion"><div class="card-body">' + Parent_owl_data + '</div></div></div>').hide();
         $("#accordion").append(Parent_data);
@@ -303,7 +303,7 @@ function Transaction_report(itr, data, Transaction_type) {
         Child_Transaction_CardType = ChildTransactionDetails?.CardType ?? ""
         Child_Transaction_CardIdentifier = ChildResponse?.TransDetailsData?.TransDetailData?.CardIdentifier ?? ""
         Child_Transaction_requestAmount = ChildRequest?.TransAmountDetails?.TransactionTotal ?? ""
-        //Child_Transaction_TransactionAmount = ChildTransactionDetails?.TotalApprovedAmount ?? ""
+        Child_Transaction_TransactionAmount = ChildTransactionDetails?.TotalApprovedAmount ?? ""
         Child_Transaction_PNR = ChildResponse?.TransDetailsData?.TransDetailData?.TravelInfo?.PNRNumber ?? ""
         Child_Transaction_ResponseText = ChildTransactionDetails?.ResponseText ?? ""
         Child_Transaction_ResponseCode = ChildTransactionDetails?.ResponseCode ?? ""
