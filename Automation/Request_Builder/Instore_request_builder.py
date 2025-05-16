@@ -28,7 +28,12 @@ class Transaction_Request_Builder :
         self.currentTime = time.strftime("%H:%M:%S:%MS", time.localtime()).replace(":", "")[:-3]
         int_value = random.randint(0,250)
         dec_value = random.randint(0, 99)
-        self.DefaultAmount = Decimal(f"{int_value}.{dec_value:02d}") #Decimal(random.randint(10, 49)).quantize(Decimal('1.00'))
+        self.DefaultAmount = Decimal(f"{int_value}.{dec_value:02d}")
+        #self.TransAmount = str(self.TransAmount) if self.TransAmount is not None else str(self.DefaultAmount)
+        self.Transactionamount = ("1.00" if config.Env().upper() == "PROD" and self.KeyedEntryAVSFlag == "Y"
+                                    else "0.10" if config.Env().upper() == "PROD"
+                                    else "1.00" if self.KeyedEntryAVSFlag == "Y"
+                                    else self.DefaultAmount),
         self.isXml = config.request_format().upper() == "XML"
         self.ParentTransactionTypeMapping = {
             "01" : "01", "02" : "01", "03" : "01", "15" : "01", "16" : "01", "20" : "01", "06_02_01" : "01",  # for sale
@@ -130,7 +135,7 @@ class Transaction_Request_Builder :
                 "languageIndicator" : self.languageIndicator,
                 "MessageLine1" : ("Sale" if TransactionTypeToRequest == "01" else "Pre-auth" if TransactionTypeToRequest == "04" else "Refund w/o Sale" if TransactionTypeToRequest == "02" else "Gift" if TransactionTypeToRequest in ("11", "12", "16", "18") else "" )+" Transaction",
                 "TransactionType" : TransactionTypeToRequest if TransactionTypeToRequest == "02" else "",
-                #"TenderAmount" : self.DefaultAmount,
+                "TenderAmount" : self.Transactionamount,
                 "AllowKeyedEntry" : self.AllowKeyedEntry,
                 "EntrySource" : EntrySource,
                 "LookUpFlag" : LookUpFlag,
@@ -206,12 +211,16 @@ class Transaction_Request_Builder :
             Token = Token if Token is not None else ""
             CardType = CardType if CardType is not None else ""
             TransactionTypeToRequest = self.ParentTransactionTypeMapping.get(TransactionTypeID)
-            TransAmount = str(TransAmount) if TransAmount is not None else  str(self.DefaultAmount)
+          #  TransAmount = str(TransAmount) if TransAmount is not None else  str(self.DefaultAmount)
             #TransAmount = "10.00" if TransactionTypeToRequest == "04" else TransAmount
-            rounded_value = str((Decimal(TransAmount) / 4).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP))
+           # rounded_value = str((Decimal(TransAmount) / 4).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP))
             EntrySource = "K" if AllowKeyedEntry.upper() == "Y" else ""
             Parent = data["TransRequest"]
             TransAmountDetails = Parent["TransAmountDetails"]
+          #  Transactionamount = ("1.00" if config.Env().upper() == "PROD" and self.KeyedEntryAVSFlag == "Y"
+           #                           else "0.10" if config.Env().upper() == "PROD"
+           #                           else "1.00" if self.KeyedEntryAVSFlag == "Y"
+           #                           else TransAmount),
             Parent.update({
                 "APPID" : self.APPID,
                 "POSID" : self.POSID,
@@ -225,7 +234,7 @@ class Transaction_Request_Builder :
                 "ADSDKSpecVer" : self.ADSDKSpecVer,
                 "TransactionType" : TransactionTypeToRequest,
                 "EntrySource" : EntrySource,
-                "SubTransType": "30" if TransAmount == "0.00" else "",
+                "SubTransType": "30" if self.KeyedEntryAVSFlag == "Y" else "",
 
                 **(
                     {"SubTransType" : "04" if TransactionTypeToRequest in ("14", "11") else "",
@@ -245,12 +254,8 @@ class Transaction_Request_Builder :
             })
 
             TransAmountDetails.update({
-                "TransactionTotal" : TransAmount,
-               "TenderAmount" : ("1.00" if config.Env().upper() == "PROD" and self.KeyedEntryAVSFlag == "Y"
-                else "0.10" if config.Env().upper() == "PROD"
-                else "1.00" if self.KeyedEntryAVSFlag == "Y"
-                else TransAmount),
-
+               "TransactionTotal" : self.Transactionamount,
+               "TenderAmount" : self.Transactionamount,
                 **({"EbtAmount" : TransAmount} if CardType.upper() == "EBF" else {}),
                 **({'PrescriptionAmount' : rounded_value,
                     'CoPaymentAmount' : rounded_value,

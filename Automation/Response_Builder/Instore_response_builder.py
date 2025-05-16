@@ -4,6 +4,8 @@ import string
 import threading
 import time
 import traceback
+from time import sleep
+
 from API.Excel_operations import Excel_Operations
 from API.Socket_API import Adsdk_Socket as socket
 from API.config import config
@@ -221,6 +223,7 @@ class Transaction_Processing :
                         print(f"CI:: {self.Parent_Transaction_CardIdentifier} -         Pos Type:: {self.POSType} ")
                         print(f"------------------------------------------------------------------------------------------------------")
                         if TransactionType not in ["20", "04_76"]:
+                            sleep(0.200)
                             self.CLOSETransaction()
                     except Exception:
                         self.ErrorText = f"Error :: ==> Request/ response format not matched. :: Expected ==> { 'XML' if self.isXml else 'JSON' }"

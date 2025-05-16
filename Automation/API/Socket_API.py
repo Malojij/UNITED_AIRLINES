@@ -43,7 +43,7 @@ class Adsdk_Socket:
 
     def httpsRequest(self, url, request, requestFormat):
         logging.info(f"REQUEST SENT :: {request}")
-        time.sleep(0.200)
+        time.sleep(0.500)
         headers = {"Content-Type": f"application/json"}
         self.httpsResponse  = requests.post(url, json=request, verify=False, headers=headers).text
 
