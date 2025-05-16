@@ -276,7 +276,7 @@ function Transaction_report(itr, data, Transaction_type) {
         var Parent_owl_data = '<div id="Parent_owl_data' + Parent_Transaction_TransactionIdentifier + '" class="owl-carousel"><div class="item"><p class="text-center">' + ' GCB RESPONSE ' + '</p><hr><pre><code>' + JSON.stringify(GCB_response, null, 4) + '</code></pre></div><div class="item"><p class="text-center">' + ' Receipt ' + '</p><hr><pre><code>' + Parent_Transaction_ReceiptInfo + '</code></pre></div><div class="item"><p class="text-center">' + ' Products ' + '</p><hr><pre><code>' + Parent_Transaction_Products + '</code></pre></div><div class="item"><p class="text-center">' + ' FleetPromptsData ' + '</p><hr><pre><code>' + Parent_Transaction_FleetPromptsData + '</code></pre></div></div>'
         var Parent_data = $('<div class="card ' + ResponseTextcolor + '"><div class="card-header" data-toggle="collapse" href="#collapse_' + Parent_Transaction_TransactionIdentifier + '"><a class="card-link"># ' + Parent_TransactionType + ' Transaction ' + Parent_Transaction_TransactionIdentifier + '</a><i class="fa-solid fa-chevron-down fa-style"></i></div><div id="collapse_' + Parent_Transaction_TransactionIdentifier + '" class="collapse" data-parent="#accordion"><div class="card-body">' + Parent_owl_data + '</div></div></div>').hide();
         $("#accordion").append(Parent_data);
-        $(Parent_data).fadeIn("slow");
+        $(Parent_data).fadeIn(500);
 		$("#Parent_owl_data" + Parent_Transaction_TransactionIdentifier).owlCarousel({
         autoPlay: 3000,
         items: 1,
@@ -336,7 +336,7 @@ function Transaction_report(itr, data, Transaction_type) {
         var Child_owl_data = '<div id="Child_owl_data' + Child_Transaction_TransactionIdentifier + '" class="owl-carousel"><div class="item"><p class="text-center">' + ' Receipt ' + '</p><hr><pre><code>' + Child_Transaction_ReceiptInfo + '</code></pre></div><div class="item"><p class="text-center">' + ' Products ' + '</p><hr><pre><code>' + Child_Transaction_Products + '</code></pre></div><div class="item"><p class="text-center">' + ' FleetPromptsData ' + '</p><hr><pre><code>' + Child_Transaction_FleetPromptsData + '</code></pre></div></div>'
         var Child_data = $('<div class="card ' + Child_color + '"><div class="card-header" data-toggle="collapse" href="#collapse_' + Child_Transaction_TransactionIdentifier + '"><a class="card-link"># ' + Child_TransactionType + ' Transaction ' + Child_Transaction_TransactionIdentifier + '</a><i class="fa-solid fa-chevron-down fa-style"></i></div><div id="collapse_' + Child_Transaction_TransactionIdentifier + '" class="collapse" data-parent="#accordion"><div class="card-body">' + Child_owl_data + '</div></div></div>').hide();
         $("#accordion").append(Child_data);
-        $(Child_data).fadeIn("slow");
+        $(Child_data).fadeIn(500);
 		$("#Child_owl_data" + Child_Transaction_TransactionIdentifier).owlCarousel({
         autoPlay: 3000, // Automatically transitions to the next slide every 3 seconds (3000 ms)
         items: 1, // Displays 1 item per slide

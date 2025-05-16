@@ -210,7 +210,7 @@ class Transaction_Processing :
                         trans_detail = self.Parent_Transaction_response.get("TransResponse", {}).get("TransDetailsData", {}).get("TransDetailData", {})
                         if isinstance(trans_detail, list) and len(trans_detail) > 0 : trans_detail = trans_detail[0]
                         self.Parent_Transaction_ResponseCode = trans_detail.get("ResponseCode", "")
-                        self.Parent_Transaction_ResponseText = trans_detail.get("ResponseText", "")
+                        self.Parent_Transaction_ResponseText = trans_detail.get("ResponseText") or trans_detail.get("TransactionResponseText", "")
                         self.Parent_Transaction_TransactionIdentifier = trans_detail.get('TransactionIdentifier', "")
                         self.Parent_Transaction_TransactionAmount = trans_detail.get('TotalApprovedAmount', "")
                         self.Parent_Transaction_CardIdentifier =  self.Parent_Transaction_response.get("TransResponse",{}).get("TransDetailsData",{}).get("TransDetailData",{}).get("CardIdentifier", "")
@@ -301,7 +301,7 @@ class Transaction_Processing :
                         TransType = self.Child_Transaction_request.get(RequestTop_node, {}).get("TransactionType")
                         trans_detail = self.Child_Transaction_response.get(ResponseTopNode, {}).get("TransDetailsData", {}).get("TransDetailData", {})
                         if isinstance(trans_detail, list) and len(trans_detail) > 0 : trans_detail = trans_detail[0]
-                        self.Child_Transaction_ResponseText = trans_detail.get("ResponseText", "")
+                        self.Child_Transaction_ResponseText = trans_detail.get("ResponseText") or trans_detail.get("TransactionResponseText", "")
                         self.Child_Transaction_TransactionIdentifier = trans_detail.get("TransactionIdentifier", "")
                         self.ChildTransactionType = "Refund" if TransType == "02" else "Void" if TransType == "06" else "Post-auth" if TransType == "05" else "CancelLast" if TransType == "76" else None
                         self.CLOSETransaction()

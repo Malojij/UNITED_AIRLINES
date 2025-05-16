@@ -30,9 +30,9 @@ class Transaction_Request_Builder :
         dec_value = random.randint(0, 99)
         self.DefaultAmount = Decimal(f"{int_value}.{dec_value:02d}")
         #self.TransAmount = str(self.TransAmount) if self.TransAmount is not None else str(self.DefaultAmount)
-        self.Transactionamount = ("1.00" if config.Env().upper() == "PROD" and self.KeyedEntryAVSFlag == "Y"
+        self.Transactionamount = ("0.00" if config.Env().upper() == "PROD" and self.KeyedEntryAVSFlag == "Y"
                                     else "0.10" if config.Env().upper() == "PROD"
-                                    else "1.00" if self.KeyedEntryAVSFlag == "Y"
+                                    else "0.00" if self.KeyedEntryAVSFlag == "Y"
                                     else self.DefaultAmount),
         self.isXml = config.request_format().upper() == "XML"
         self.ParentTransactionTypeMapping = {
