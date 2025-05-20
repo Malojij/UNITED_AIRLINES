@@ -7,6 +7,8 @@ from API.Fleet_Processor import fleet_processor, fleet_data_appender
 from API.Gift_Processor import Gift_processor
 from API.Product_data_mapping import Product_data_mapping
 from API.config import config
+from decimal import Decimal
+import random
 
 
 class Outdoor_Request_Builder :
@@ -18,6 +20,7 @@ class Outdoor_Request_Builder :
         self.SessionId = config.SessionId()
         self.ADSDKSpecVer = config.ADSDKSpecVer()
         self.APPID = "01"
+
         self.defaultAmount = "10.00"
         self.TodaysDate = datetime.datetime.now().strftime('%m/%d/%Y').replace("/", "")
         self.YYMMDD = datetime.datetime.now().strftime('%y/%m/%d').replace("/", "")

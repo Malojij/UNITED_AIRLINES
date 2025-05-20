@@ -101,7 +101,14 @@ class Transaction_Processing:
                         self.Parent_Transaction_ResponseText = trans_detail.get('ResponseText', "")
                         self.Parent_Transaction_TransactionSequenceNumber = trans_detail.get('TransactionSequenceNumber', "")
                         self.Parent_Transaction_TransactionAmount = trans_detail.get('TotalApprovedAmount', " ")
+                        self.Parent_Transaction_PurchaseRestrictionCode = trans_detail.get("PurchaseRestrictionCode", {})
                         self.Parent_Transaction_AurusPayTicketNum = self.Parent_Transaction_response.get("TransResponse", {}).get("AurusPayTicketNum", "")
+                        print(f"------------------------------------------------------------------------------------------------------")
+                        print(f"Card Type:: {self.Gcb_Transaction_CardType}         AMT:: {self.Parent_Transaction_TransactionAmount}")
+                        print(f"TransID/ TicketNo:: {self.Parent_Transaction_TransactionIdentifier}/ {self.Parent_Transaction_AurusPayTicketNum}")
+                        print(f"RESTRICTION CODE VALUES:: {self.Parent_Transaction_PurchaseRestrictionCode}")
+                        print(f"------------------------------------------------------------------------------------------------------")
+
                     except Exception:
                         self.ErrorText = f"Error :: ==> Request/response format not matched. :: Expected ==> { 'XML' if self.isXml else 'JSON' }"
         except Exception as e:
