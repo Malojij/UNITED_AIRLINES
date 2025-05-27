@@ -190,6 +190,7 @@ function Transaction_report(response, Transaction_type, starttime, iteration) {
         Child_Transaction_ResponseText = ChildTransactionDetails.ResponseText
         Child_Transaction_ResponseCode = ChildTransactionDetails.ResponseCode
         Child_Transaction_TransactionIdentifier = ChildTransactionDetails.TransactionIdentifier
+        Child_Transaction_TransactionIdentifier = TransDetailsData?.TransDetailData[1]?.TransactionIdentifier ?? GCB_UNKN;
         Child_Transaction_AurusPayTicketNum = ChildResponse.AurusPayTicketNum
         Child_Transaction_ApprovalCode = ChildTransactionDetails.ApprovalCode
         Child_Transaction_ProductCount = ChildTransactionDetails.ProductCount
