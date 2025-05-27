@@ -133,7 +133,7 @@ class Transaction_Request_Builder :
                 "SessionId" : self.SessionId,
                 "ADSDKSpecVer" : self.ADSDKSpecVer,
                 "languageIndicator" : self.languageIndicator,
-                "MessageLine1" : ("Sale" if TransactionTypeToRequest == "01" else "Pre-auth" if TransactionTypeToRequest == "04" else "Refund w/o Sale" if TransactionTypeToRequest == "02" else "Gift" if TransactionTypeToRequest in ("11", "12", "16", "18") else "" )+" Transaction",
+                #"MessageLine1" : ("Sale" if TransactionTypeToRequest == "01" else "Pre-auth" if TransactionTypeToRequest == "04" else "Refund w/o Sale" if TransactionTypeToRequest == "02" else "Gift" if TransactionTypeToRequest in ("11", "12", "16", "18") else "" )+" Transaction",
                 "TransactionType" : TransactionTypeToRequest if TransactionTypeToRequest == "02" else "",
                 "TenderAmount" : self.Transactionamount,
                 "AllowKeyedEntry" : self.AllowKeyedEntry,
