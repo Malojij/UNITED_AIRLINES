@@ -49,11 +49,11 @@ class InstoreTesting:
             CHILDTRANSREQUEST = None
             PARENTTRANSREQUEST = None
             if transactionSequence in ("0", "1"):
-                if Transaction_type in ("01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","20","06_02_01"):
+                if Transaction_type in ("01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","20","06_02_01","04_76"):
                     PARENTTRANSREQUEST = lambda : self.transaction_processor.ParentTransactionProcessing(AllowKeyedEntry, product_count, Token_type, Transaction_type, amount)
 
             if transactionSequence in ("0", "2"):
-                if Transaction_type in ("2","02","03","05","06","08","15","16","20", "06_02_01"):
+                if Transaction_type in ("2","02","03","05","06","08","15","16","20", "06_02_01", "04_76"):
                     CHILDTRANSREQUEST = lambda : self.transaction_processor.ChildTransactionProcessing(childData, product_count,Transaction_type, amount)
 
             logging.info(f'Performing # {Iteration} Transaction')

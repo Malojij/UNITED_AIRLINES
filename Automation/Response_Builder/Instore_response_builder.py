@@ -221,7 +221,7 @@ class Transaction_Processing :
                         print(f"Card Type:: {self.Gcb_Transaction_CardType}          PNR:: {self.RandomNumberForPNR}         AMT:: {self.Parent_Transaction_TransactionAmount}")
                         print(f"TransID/ TicketNo:: {self.Parent_Transaction_TransactionIdentifier}/ {self.Parent_Transaction_AurusPayTicketNum}")
                         print(f"RESPONSE TEXT:: {self.Parent_Transaction_ResponseText}")
-                        print(f"CI:: {self.Parent_Transaction_CardIdentifier} -         Pos Type:: {self.POSType} ")
+                        print(f"CI:: {self.Parent_Transaction_CardIdentifier}          Pos Type:: {self.POSType} ")
                         print(f"------------------------------------------------------------------------------------------------------")
                         if TransactionType not in ["20", "04_76"]:
                             sleep(0.200)

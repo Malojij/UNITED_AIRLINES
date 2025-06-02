@@ -293,7 +293,16 @@ function Transaction_report(itr, data, Transaction_type) {
         ChildRequest = (Transaction_type != "20" && Transaction_type != "04_76") ? Child_Request.TransRequest : Child_Request.CancelLastTransRequest;
         transactionType = ChildRequest?.TransactionType ?? "00"
         ChildResponse = (transactionType != "76") ? Child_Response.TransResponse : Child_Response.CancelLastTransResponse
-        ChildTransactionDetails = (transactionType == "76") ? ChildTransactionDetails = ChildResponse : (requestFormat === "JSON") ? ChildResponse?.TransDetailsData?.TransDetailData?.[0] ?? "" : ChildResponse?.TransDetailsData?.TransDetailData ?? "";
+        //ChildTransactionDetails = (transactionType == "76") ? ChildTransactionDetails = ChildResponse : (requestFormat === "JSON") ? ChildResponse?.TransDetailsData?.TransDetailData?.[0] ?? "" : ChildResponse?.TransDetailsData?.TransDetailData ?? "";
+        let ChildTransactionDetails;
+            if (transactionType === "76") {
+            ChildTransactionDetails = ChildResponse;
+            } else if (requestFormat === "JSON") {
+                ChildTransactionDetails = ChildResponse?.TransDetailsData?.TransDetailData?.[0] ?? {};
+            } else {
+                    ChildTransactionDetails = ChildResponse?.TransDetailsData?.TransDetailData ?? {};
+                   }
+
         Child_Transaction_CardNumber = ChildTransactionDetails?.CardNumber ?? ""
         Child_Transaction_CIToken = ChildTransactionDetails?.CardIdentifier ?? ""
         Child_Transaction_CRMToken = ChildTransactionDetails?.CRMToken ?? ""
@@ -315,7 +324,7 @@ function Transaction_report(itr, data, Transaction_type) {
         Child_Transaction_ProcessorResponseCode =  ChildTransactionDetails?.ProcessorResponseCode ?? ""
         Child_Transaction_ReceiptInfo = (Transaction_Type !== "20")? JSON.stringify(ChildTransactionDetails?.ReceiptDetails ?? {}, null, 4)  : "";
 		Child_Transaction_FleetPromptsData = (Transaction_Type !== "20")?  JSON.stringify(ChildTransactionDetails?.FleetPromptsData ?? {}, null, 4) : "";
-        if (ChildRequest.hasOwnProperty("Level3ProductsData") && ChildRequest.hasOwnProperty("FleetData")) {
+        if (ChildRequest && ChildRequest.hasOwnProperty("Level3ProductsData") && ChildRequest.hasOwnProperty("FleetData")) {
             Child_Transaction_Products = JSON.stringify("{}", null, 4)
         } else if (ChildRequest.hasOwnProperty("Level3ProductsData")) {
             Child_Transaction_Products = JSON.stringify(ChildRequest.Level3ProductsData, null, 4)

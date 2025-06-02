@@ -51,7 +51,7 @@
                         <div class="col-md-2">
                             <div class="shadow-textarea">
                                 <select class="mytext w-100 text-center z-depth-1" id="product_count" name="product_count" required>
-                                  <option value="0">Select products count</option>
+                                  <option value="">Select products count</option>
                                   <option value="0">00</option>
                                   <option value="1">01</option>
                                   <option value="2">02</option>
@@ -87,13 +87,14 @@
             </div>
         </div>
     </section>
-    <section class="d-flex align-items-center">
+  <section class="d-flex align-items-center">
         <div class="panel-wrap">
             <div class="switcher-btn" onclick="switchBtn()" > <i class="fas fa-plus"></i></div>
             <div class="panel">
-                <div class='w-100 d-none mt-1' id='export_btn'>
+                <div class='' id='export_btn'>
                     <button class="btn btn-primary w-100" name='btn' onclick='exportToExcel()' type='button'>Export<i class='fas fa-download' style="padding-left: 10%;"></i></button>
                 </div>
+
             <div class="accordion" id="accordion"></div>
             </div>
         </div>
@@ -109,9 +110,18 @@
 <script src="{% static 'asset/vendor/isotope-layout/isotope.pkgd.min.js' %}"></script>
 <script src="{% static 'asset/vendor/venobox/venobox.min.js' %}"></script>
 <script src="{% static 'asset/vendor/aos/aos.js' %}"></script>
-<script src="{% static 'asset/js/main.js' %}"></script>
+
+<!-- Excel Support -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<!-- Custom JS -->
 <script src="{% static 'asset/js/Outdoor_Processor.js' %}"></script>
+<script src="{% static 'asset/js/main.js' %}"></script>
 <script>
+
+    $.ajaxSetup({
+  headers: { "X-CSRFToken": "{{ csrf_token }}" }
+});
 
 
 $('#myTable tbody').on('click', 'tr', function() {
@@ -165,7 +175,7 @@ async function readExcel() {
                     resolve();
                 }, 500));
             } catch (error) {
-                console.error('Error in AJAX call:', error);
+                console.error(`Iteration ${index + 1} failed:`, error);
             } finally {
                 $('#loader').hide();
                 showLoaderMessage("Iterations Completed");
