@@ -213,19 +213,20 @@ class Transaction_Processing :
                         self.Parent_Transaction_ResponseText = trans_detail.get("ResponseText") or trans_detail.get("TransactionResponseText", "")
                         self.Parent_Transaction_TransactionIdentifier = trans_detail.get('TransactionIdentifier', "")
                         self.Parent_Transaction_TransactionAmount = trans_detail.get('TotalApprovedAmount', "")
+                        self.Parent_POSType = self.Parent_Transaction_request.get("TransRequest").get("POSType")
                         self.Parent_Transaction_CardIdentifier =  self.Parent_Transaction_response.get("TransResponse",{}).get("TransDetailsData",{}).get("TransDetailData",{}).get("CardIdentifier", "")
                         self.isSignatureEnabled = trans_detail.get("SignatureReceiptFlag", "") if trans_detail.get("SignatureReceiptFlag", "") is not None else self.isSignatureEnabled
                         self.Parent_Transaction_AurusPayTicketNum = self.Parent_Transaction_response.get("TransResponse", {}).get("AurusPayTicketNum", "")
                         self.ParentTransactionType = "Sale" if TransType == "01" else "Pre-auth" if TransType == "04" else "Refund w/o Sale" if TransType == "02" else "Gift Transactions"
-                        print(f"------------------------------------------------------------------------------------------------------")
-                        print(f"Card Type:: {self.Gcb_Transaction_CardType}          PNR:: {self.RandomNumberForPNR}         AMT:: {self.Parent_Transaction_TransactionAmount}")
-                        print(f"TransID/ TicketNo:: {self.Parent_Transaction_TransactionIdentifier}/ {self.Parent_Transaction_AurusPayTicketNum}")
-                        print(f"RESPONSE TEXT:: {self.Parent_Transaction_ResponseText}")
-                        print(f"CI:: {self.Parent_Transaction_CardIdentifier}          Pos Type:: {self.POSType} ")
-                        print(f"------------------------------------------------------------------------------------------------------")
                         if TransactionType not in ["20", "04_76"]:
                             sleep(0.200)
                             self.CLOSETransaction()
+                        print(f"------------------------------------------------------------------------------------------------------")
+                        print(f"Card Type:: {self.Gcb_Transaction_CardType}     PNR:: {self.RandomNumberForPNR}     AMT:: {self.Parent_Transaction_TransactionAmount}       POSType:: {self.Parent_POSType}")
+                        print(f"CI:: {self.Parent_Transaction_CardIdentifier}")
+                        print(f"RESPONSE TEXT:: {self.Parent_Transaction_ResponseText}")
+                        print(f"TransID/ TicketNo:: {self.Parent_Transaction_TransactionIdentifier}/ {self.Parent_Transaction_AurusPayTicketNum}")
+                        print(f"------------------------------------------------------------------------------------------------------")
                     except Exception:
                         self.ErrorText = f"Error :: ==> Request/ response format not matched. :: Expected ==> { 'XML' if self.isXml else 'JSON' }"
                         self.CLOSETransaction()
