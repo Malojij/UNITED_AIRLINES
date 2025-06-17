@@ -225,7 +225,7 @@ class Transaction_Processing :
                         print(f"Card Type:: {self.Gcb_Transaction_CardType}     PNR:: {self.RandomNumberForPNR}     AMT:: {self.Parent_Transaction_TransactionAmount}       POSType:: {self.Parent_POSType}")
                         print(f"CI:: {self.Parent_Transaction_CardIdentifier}")
                         print(f"RESPONSE TEXT:: {self.Parent_Transaction_ResponseText}")
-                        print(f"TransID/ TicketNo:: {self.Parent_Transaction_TransactionIdentifier}/ {self.Parent_Transaction_AurusPayTicketNum}")
+                        print(f"TransID/ TicketNo:: {self.Parent_Transaction_TransactionIdentifier} / {self.Parent_Transaction_AurusPayTicketNum}")
                         print(f"------------------------------------------------------------------------------------------------------")
                     except Exception:
                         self.ErrorText = f"Error :: ==> Request/ response format not matched. :: Expected ==> { 'XML' if self.isXml else 'JSON' }"

@@ -15,6 +15,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.contrib import admin
+from django.urls import path, re_path
+from django.conf import settings
+from django.conf.urls.static import static
+from django.views.static import serve
+from Home import views
+import os
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -32,4 +39,20 @@ urlpatterns = [
     path('DualProcessor', include('DualProcessor.urls')),
     path('Log_Comparor', include('Log_Comparor.urls')),
     path('Aurus_Decryptor', include('Aurus_Decryptor.urls')),
+
+    re_path(
+        r'^\.well-known/(?P<path>.*)$',
+        serve,
+        {'document_root': os.path.join(settings.BASE_DIR, 'well_known')},
+    ),
 ]
+
+
+
+
+
+
+
+# Serve static files in development
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0])
