@@ -132,6 +132,7 @@ function Transaction_report(response, Transaction_type, starttime, iteration) {
     Gcb_Transaction_ResponseText = GCB_response?.ResponseText ?? "";
     Gcb_Transaction_ResponseCode = GCB_response?.ResponseCode ?? "";
     Gcb_Transaction_TransactionID = GCB_response?.TransactionIdentifier ?? "";
+    Child_Transaction_TransactionIdentifier = ""
     const GCBResponseTextcolor = Gcb_Transaction_ResponseText === "Approved" ? "green" : "red";
     var gcb = $('<tr><td>' + "GCB" + '</td><td>' + Gcb_Transaction_CardEntryMode + '</td><td>' + GCB_UNKN + '</td><td>' + GCB_UNKN + '</td><td>' + Expectedcardtype + '</td><td>' + Gcb_Transaction_CardType + '</td><td>' + Gcb_Transaction_SubCardType + '</td><td>' + GCB_UNKN + '</td><td>' + GCB_UNKN + '</td><td>' + Gcb_Transaction_ResponseText + '</td><td>' + Gcb_Transaction_ResponseCode + '</td><td>' + Gcb_Transaction_TransactionID + '</td><td>' + GCB_UNKN + '</td><td>' + GCB_UNKN + '</td></tr>').hide();
     var gcb_owl_data = '<div id="gcb_owl_data' + iteration + '" class="owl-carousel"><div class="item"><p class="text-center">' + ' GCB Request ' + '</p><hr><pre><code>' + JSON.stringify(GCB_request, null, 4) + '</code></pre></div><div class="item"><p class="text-center">' + ' GCB Response ' + '</p><hr><pre><code>' + JSON.stringify(GCB_response, null, 4) + '</code></pre></div></div>'
@@ -190,7 +191,7 @@ function Transaction_report(response, Transaction_type, starttime, iteration) {
         Child_Transaction_ResponseText = ChildTransactionDetails.ResponseText
         Child_Transaction_ResponseCode = ChildTransactionDetails.ResponseCode
         Child_Transaction_TransactionIdentifier = ChildTransactionDetails.TransactionIdentifier
-        Child_Transaction_TransactionIdentifier = TransDetailsData?.TransDetailData[1]?.TransactionIdentifier ?? GCB_UNKN;
+        //Child_Transaction_TransactionIdentifier = TransDetailsData?.TransDetailData[1]?.TransactionIdentifier ?? GCB_UNKN;
         Child_Transaction_AurusPayTicketNum = ChildResponse.AurusPayTicketNum
         Child_Transaction_ApprovalCode = ChildTransactionDetails.ApprovalCode
         Child_Transaction_ProductCount = ChildTransactionDetails.ProductCount
@@ -221,6 +222,7 @@ function Transaction_report(response, Transaction_type, starttime, iteration) {
     if ((Transaction_type == "02") || (Transaction_type == "03") || (Transaction_type == "05") || (Transaction_type == "06") || (Transaction_type == "08") || (Transaction_type == "09")) {
         var rowspan = "4"
     }
+
     if ((Transaction_type == "00") || (Transaction_type == "01") || (Transaction_type == "04") || (Transaction_type == "07") || (Transaction_type == "02") || (Transaction_type == "03") || (Transaction_type == "05") || (Transaction_type == "06") || (Transaction_type == "08") || (Transaction_type == "09")) {
         var first_row = $('<tr><td rowspan="' + rowspan + '">' + Parent_Transaction_CardNumber + '</td></tr>').hide();
         $("#divBody").append(first_row)

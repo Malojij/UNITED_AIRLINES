@@ -217,7 +217,7 @@ class Transaction_Request_Builder :
             EntrySource = "K" if AllowKeyedEntry.upper() == "Y" else ""
             Parent = data["TransRequest"]
             TransAmountDetails = Parent["TransAmountDetails"]
-          #  Transactionamount = ("1.00" if config.Env().upper() == "PROD" and self.KeyedEntryAVSFlag == "Y"
+           #  Transactionamount = ("1.00" if config.Env().upper() == "PROD" and self.KeyedEntryAVSFlag == "Y"
            #                           else "0.10" if config.Env().upper() == "PROD"
            #                           else "1.00" if self.KeyedEntryAVSFlag == "Y"
            #                           else TransAmount),

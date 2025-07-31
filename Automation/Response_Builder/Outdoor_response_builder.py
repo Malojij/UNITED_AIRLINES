@@ -103,10 +103,13 @@ class Transaction_Processing:
                         self.Parent_Transaction_TransactionAmount = trans_detail.get('TotalApprovedAmount', " ")
                         self.Parent_Transaction_PurchaseRestrictionCode = trans_detail.get("PurchaseRestrictionCode", {})
                         self.Parent_Transaction_AurusPayTicketNum = self.Parent_Transaction_response.get("TransResponse", {}).get("AurusPayTicketNum", "")
+                        self.Parent_Transaction_ProcessorMerchantId = trans_detail.get("ProcessorMerchantId", "")
+
                         print(f"------------------------------------------------------------------------------------------------------")
                         print(f"Card Type:: {self.Gcb_Transaction_CardType}         AMT:: {self.Parent_Transaction_TransactionAmount}")
                         print(f"TransID/ TicketNo:: {self.Parent_Transaction_TransactionIdentifier}/ {self.Parent_Transaction_AurusPayTicketNum}")
                         print(f"RESTRICTION CODE VALUES:: {self.Parent_Transaction_PurchaseRestrictionCode}")
+                        print(f"Processor:: {self.Parent_Transaction_ProcessorMerchantId}")
                         print(f"------------------------------------------------------------------------------------------------------")
 
                     except Exception:

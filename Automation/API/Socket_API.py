@@ -6,8 +6,26 @@ import requests
 from API.config import config
 
 import logging
+#---------------------Comment below code if you do not want the logs in file-------------------#
+import os
+# Create logs directory if not present (optional, but good practice)
+log_dir = r'D:\PROJECTS\MEIJER\AESDK\25.07.001.001\logs'
+os.makedirs(log_dir, exist_ok=True)
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+log_file = os.path.join(log_dir, 'adsdk.log')
+
+
+# Configure logging to write to a file
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    filename=log_file,   # log file path
+    filemode='a'  # Append mode; use 'w' to overwrite each time
+)
+#---------------------Comment above code if you do not want the logs in file-------------------#
+
+
+#logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
 class Adsdk_Socket:
