@@ -9,7 +9,7 @@ import socket
 def extract_time_and_xml_from_log():
     log_file_path = 'D:\Ganesh\Meijer\Automation_tool\Miejer_Petro\logs.txt'
     format_str = "%Y-%m-%d %H:%M:%S,%f"
-    pattern = re.compile(r'(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d{3}) INFO     \[AesdkLibraryOp\]\s+Final Received Request is in XML Format ::\s+(<(\w+Request)>.*?</\3>)', re.IGNORECASE | re.DOTALL )
+    pattern = re.compile(r'(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d{3}) INFO\[AesdkLibraryOp\]\s+Final Received Request is in XML Format ::\s+(<(\w+Request)>.*?</\3>)', re.IGNORECASE | re.DOTALL )
     timestamp = []
     requests = []
     orginaltime = "2024-09-10 14:51:54,076"

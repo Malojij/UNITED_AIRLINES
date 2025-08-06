@@ -105,7 +105,7 @@ class Transaction_Processing:
                         self.Parent_Transaction_AurusPayTicketNum = self.Parent_Transaction_response.get("TransResponse", {}).get("AurusPayTicketNum", "")
                         self.Parent_Transaction_ProcessorMerchantId = trans_detail.get("ProcessorMerchantId", "")
                         self.Parent_Transaction_ProcessorMerchantId = (
-                            "CHASE" if self.Parent_Transaction_ProcessorMerchantId == "577000777777" else "Other"
+                            "CHASE" if self.Parent_Transaction_ProcessorMerchantId == "577000777777" or "700000013799" else "Other"
                         )
 
                         print(f"------------------------------------------------------------------------------------------------------")
