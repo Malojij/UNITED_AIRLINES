@@ -104,11 +104,15 @@ class Transaction_Processing:
                         self.Parent_Transaction_PurchaseRestrictionCode = trans_detail.get("PurchaseRestrictionCode", {})
                         self.Parent_Transaction_AurusPayTicketNum = self.Parent_Transaction_response.get("TransResponse", {}).get("AurusPayTicketNum", "")
                         self.Parent_Transaction_ProcessorMerchantId = trans_detail.get("ProcessorMerchantId", "")
+                        self.Parent_Transaction_ProcessorMerchantId = (
+                            "CHASE" if self.Parent_Transaction_ProcessorMerchantId == "577000777777" else "Other"
+                        )
 
                         print(f"------------------------------------------------------------------------------------------------------")
                         print(f"Card Type:: {self.Gcb_Transaction_CardType}         AMT:: {self.Parent_Transaction_TransactionAmount}")
-                        print(f"TransID/ TicketNo:: {self.Parent_Transaction_TransactionIdentifier}/ {self.Parent_Transaction_AurusPayTicketNum}")
-                        print(f"RESTRICTION CODE VALUES:: {self.Parent_Transaction_PurchaseRestrictionCode}")
+                        print(f"TransID:: {self.Parent_Transaction_TransactionIdentifier}")
+                        print(f"Ticket No:: {self.Parent_Transaction_AurusPayTicketNum}")
+                        #print(f"RESTRICTION CODE VALUES:: {self.Parent_Transaction_PurchaseRestrictionCode}")
                         print(f"Processor:: {self.Parent_Transaction_ProcessorMerchantId}")
                         print(f"------------------------------------------------------------------------------------------------------")
 

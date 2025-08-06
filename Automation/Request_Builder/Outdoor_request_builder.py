@@ -175,7 +175,7 @@ class Outdoor_Request_Builder :
                                  {"Level3Product" : products['Product_list']}
                              }
                     })
-                if config.processor().upper() == "FD" or (CardType.endswith("F") and CardType.upper() != "EBF") :
+                if config.processor().upper() == "FD" or (CardType.endswith("F") or CardType.endswith("C") and CardType.upper() != "EBF") :
                     products = Product_data_mapping.ProductData_Mapping(self.defaultAmount, "", "fleetproductdata", productCount)
                     Parent.update({
                         "FleetData" :

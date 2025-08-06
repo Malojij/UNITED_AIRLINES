@@ -15,7 +15,7 @@ class Product_data_mapping:
                         {"ItemCode": "00003800000120", "ItemReferenceNumber": "0002", "Quantity": "001", "RedemptionReqAmount": "0.12", "TaxAmount": "0.00", "UnitPrice" : "1.000"}]
         else:
             products = [{"ProductCode": "040", "ProductName": "Other", "UnitOfMeasure": "U", "UnitPrice": "1.000"},
-                        {"ProductCode": "001", "ProductName": "erosene", "UnitOfMeasure": "G", "UnitPrice": "1.000"},
+                        {"ProductCode": "001", "ProductName": "Kerosene", "UnitOfMeasure": "G", "UnitPrice": "1.000"},
                         {"ProductCode": "042", "ProductName": "Bread", "UnitOfMeasure": "U", "UnitPrice": "1.000"},
                         {"ProductCode": "002", "ProductName": "Diesel", "UnitOfMeasure": "G", "UnitPrice": "1.000"},
                         {"ProductCode": "004", "ProductName": "Super Unleaded", "UnitOfMeasure": "G", "UnitPrice": "1.000"},
