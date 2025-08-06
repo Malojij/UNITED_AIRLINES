@@ -1,0 +1,33 @@
+digraph {
+	graph [bgcolor=lightgrey fontsize=20 labeljust=l rankdir=LR]
+	node [fontname=Helvetica style=filled]
+	A [label="Merchant initiates PTR request" fillcolor=lightblue]
+	B [label="Payment Page Displayed" fillcolor=lightgreen]
+	C [label="Page Submitted
+(Payment Data Tokenized & Authorization Initiated)" fillcolor=orange]
+	D [label="Merchant Backend Notified
+(Token & Authorization Response)" fillcolor=gold]
+	E [label="Merchant Initiates Authorization using Token" fillcolor=lightcoral]
+	F [label="Authorization Response Received" fillcolor=lightpink]
+	G [label="Transaction Status Request from Merchant" fillcolor=lightyellow]
+	H [label="Aurus Posts Callback to Merchant" fillcolor=violet]
+	I1 [label="Callback Approved" fillcolor=mediumseagreen]
+	I2 [label="Callback Timeout
+→ Reversal by Aurus" fillcolor=tomato]
+	I3 [label="Callback Declined
+→ Reversal by Aurus" fillcolor=tomato]
+	J [label="Additional Processes:
+Pre-Auth, Post-Auth, Refund, Void
+(With API Flows & Screenshots)" fillcolor=cyan]
+	A -> B
+	B -> C
+	C -> D
+	D -> E
+	E -> F
+	F -> G
+	G -> H
+	H -> I1
+	H -> I2
+	H -> I3
+	F -> J [label="Also includes..."]
+}
