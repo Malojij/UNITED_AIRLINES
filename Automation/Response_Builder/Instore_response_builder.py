@@ -277,25 +277,31 @@ class Transaction_Processing :
                 if child_Transaction_res:
                     try:
                         self.Child_Transaction_request = Excel_Operations.ConvertToJson(Child_Transaction, self.isXml)
-                        self.Child_Transaction_response = Excel_Operations.ConvertToJson(child_Transaction_res, self.isXml)
-                        trans_detail = self.Child_Transaction_response.get("TransResponse", {}).get("TransDetailsData", {}).get("TransDetailData", {})
-                        if isinstance(trans_detail, list) and len(trans_detail) > 0 : trans_detail = trans_detail[0]
+                        self.Child_Transaction_response = Excel_Operations.ConvertToJson(child_Transaction_res,
+                                                                                         self.isXml)
+                        RequestTop_node = next(iter(self.Child_Transaction_request))
+                        ResponseTopNode = next(iter(self.Child_Transaction_response))
+                        TransType = self.Child_Transaction_request.get(RequestTop_node, {}).get("TransactionType")
+                        trans_detail = self.Child_Transaction_response.get(ResponseTopNode, {}).get("TransDetailsData",{}).get("TransDetailData", {})
+                        if isinstance(trans_detail, list) and len(trans_detail) > 0:
+                            trans_detail = trans_detail[0]
+                        self.Child_Transaction_ResponseText = trans_detail.get("ResponseText") or trans_detail.get(
+                            "TransactionResponseText", "")
                         self.Child_Transaction_TransactionIdentifier = trans_detail.get("TransactionIdentifier", "")
-                        self.Child_Transaction_AurusPayTicketNumber = self.Child_Transaction_response.get("TransResponse", {}).get("AurusPayTicketNum")
-                        if Child_TransactionType == "06_02_01":
-                            self.CLOSETransaction()
-                            Child_Transaction = self.Transaction_Request_Builder.Child_Transaction(
-                                RandomNumber=self.RandomNumberForInvoice,
-                                productCount=productCount,
-                                Parent_TransactionID=self.Child_Transaction_TransactionIdentifier,
-                                Parent_AurusPayTicketNum=self.Child_Transaction_AurusPayTicketNumber,
-                                CardType=Gcb_Transaction_CardType,
-                                Transaction_total=Parent_Transaction_TransactionAmount,
-                                TransactionTypeID="06",
-                                 RandomPNR = self.RandomNumberForPNR
-                            )
+                        self.Child_Transaction_AurusPayTicketNumber = self.Child_Transaction_response.get(
+                            "TransResponse", {}).get("AurusPayTicketNum")
+                        self.ChildTransactionType = (
+                            "Refund" if TransType == "02" else
+                            "Void" if TransType == "06" else
+                            "Post-auth" if TransType == "05" else
+                            "CancelLast" if TransType == "76" else None
+                        )
+                        self.CLOSETransaction()
+                    except Exception:
+                        self.ErrorText = f"Error :: ==> Request/response format not matched. :: Expected ==> {'XML' if self.isXml else 'JSON'}"
+                        self.CLOSETransaction()
 
-                            child_Transaction_res = self.handleSocketRequest(Child_Transaction, False, "")
+                        child_Transaction_res = self.handleSocketRequest(Child_Transaction, False, "")
                         self.Child_Transaction_request = Excel_Operations.ConvertToJson(Child_Transaction, self.isXml)
                         self.Child_Transaction_response = Excel_Operations.ConvertToJson(child_Transaction_res, self.isXml)
                         RequestTop_node = next(iter(self.Child_Transaction_request))
@@ -303,7 +309,22 @@ class Transaction_Processing :
                         TransType = self.Child_Transaction_request.get(RequestTop_node, {}).get("TransactionType")
                         trans_detail = self.Child_Transaction_response.get(ResponseTopNode, {}).get("TransDetailsData", {}).get("TransDetailData", {})
                         if isinstance(trans_detail, list) and len(trans_detail) > 0 : trans_detail = trans_detail[0]
-                        self.Child_Transaction_ResponseText = trans_detail.get("ResponseText") or trans_detail.get("TransactionResponseText", "")
+                        #self.Child_Transaction_ResponseText = trans_detail.get("ResponseText") or trans_detail.get("TransactionResponseText", "")
+                        # Extract ResponseText from any possible node — covers Void, CancelLast, Refund, etc.
+                        trans_detail = self.Child_Transaction_response.get(ResponseTopNode, {}).get("TransDetailsData",
+                                                                                                    {}).get(
+                            "TransDetailData", {})
+                        if isinstance(trans_detail, list) and len(trans_detail) > 0:
+                            trans_detail = trans_detail[0]
+
+                        self.Child_Transaction_ResponseText = (
+                                trans_detail.get("ResponseText")
+                                or trans_detail.get("TransactionResponseText")
+                                or trans_detail.get("ResponseData", {}).get("ResponseText")
+                                or self.Child_Transaction_response.get("TransResponse", {}).get("ResponseText")
+                                or "Response Text Not Found"
+                        )
+
                         self.Child_Transaction_TransactionIdentifier = trans_detail.get("TransactionIdentifier", "")
                         self.ChildTransactionType = "Refund" if TransType == "02" else "Void" if TransType == "06" else "Post-auth" if TransType == "05" else "CancelLast" if TransType == "76" else None
                         self.CLOSETransaction()

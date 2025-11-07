@@ -34,7 +34,7 @@
 		"AmountNoBar": "1",
 		"OrigAurusPayTicketNum": "",
 		"OrigTransactionIdentifier": "",
-		"PartialAllowed": "1",
+		"PartialAllowed": "0",
 		"ShowResponse": "0",
 		"ECommerceIndicator": "N",
 		"SubTransType": "",

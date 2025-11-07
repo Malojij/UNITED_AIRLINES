@@ -24,7 +24,7 @@ class Outdoor_Request_Builder :
         self.ADSDKSpecVer = config.ADSDKSpecVer()
         self.APPID = "01"
 
-        self.defaultAmount = "10.00"
+        self.defaultAmount = "0.01"
         self.TodaysDate = datetime.datetime.now().strftime('%m/%d/%Y').replace("/", "")
         self.YYMMDD = datetime.datetime.now().strftime('%y/%m/%d').replace("/", "")
         self.currentTime = time.strftime("%H:%M:%S:%MS", time.localtime()).replace(":", "")[:-3]
