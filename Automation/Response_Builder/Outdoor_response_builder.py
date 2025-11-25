@@ -104,9 +104,15 @@ class Transaction_Processing:
                         self.Parent_Transaction_PurchaseRestrictionCode = trans_detail.get("PurchaseRestrictionCode", {})
                         self.Parent_Transaction_AurusPayTicketNum = self.Parent_Transaction_response.get("TransResponse", {}).get("AurusPayTicketNum", "")
                         self.Parent_Transaction_ProcessorMerchantId = trans_detail.get("ProcessorMerchantId", "")
-                        self.Parent_Transaction_ProcessorMerchantId = (
-                            "CHASE" if self.Parent_Transaction_ProcessorMerchantId == "577000777777" or "700000013799" else "Other"
-                        )
+                        CHASE_MIDS = {"577000777777", "700000013799"}
+                        VANTIV_MIDS = {"038447094"}
+                        mid = str(self.Parent_Transaction_ProcessorMerchantId).strip()
+                        if mid in VANTIV_MIDS:
+                            self.Parent_Transaction_ProcessorMerchantId = "VANTIV"
+                        elif mid in CHASE_MIDS:
+                            self.Parent_Transaction_ProcessorMerchantId = "CHASE"
+                        else:
+                            self.Parent_Transaction_ProcessorMerchantId = "Other"
 
                         print(f"------------------------------------------------------------------------------------------------------")
                         print(f"Card Type:: {self.Gcb_Transaction_CardType}         AMT:: {self.Parent_Transaction_TransactionAmount}")
