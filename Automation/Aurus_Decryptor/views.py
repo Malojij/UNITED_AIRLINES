@@ -18,6 +18,9 @@ class Aurus_Decryptor:
             Payload = request.POST.get("encryptedRequest", "")
             Payload = re.sub(r'\s+', '', Payload)
             print(Payload)
+
+
+
             Payload = json.loads(Payload)
             print(Payload)
             encryptionFlag = Payload.get("encryptionFlag") if "encryptionFlag" in Payload else Payload.get("EncFlag") if "EncFlag" in Payload else ""

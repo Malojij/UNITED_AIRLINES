@@ -222,6 +222,7 @@ class Transaction_Processing :
                             sleep(0.200)
                             self.CLOSETransaction()
                         print(f"------------------------------------------------------------------------------------------------------")
+                        print(f"{self.ParentTransactionType.upper():^80}")
                         print(f"Card Type:: {self.Gcb_Transaction_CardType}     PNR:: {self.RandomNumberForPNR}     AMT:: {self.Parent_Transaction_TransactionAmount}       POSType:: {self.Parent_POSType}")
                         print(f"CI:: {self.Parent_Transaction_CardIdentifier}")
                         print(f"RESPONSE TEXT:: {self.Parent_Transaction_ResponseText}")
@@ -297,6 +298,7 @@ class Transaction_Processing :
                             "CancelLast" if TransType == "76" else None
                         )
                         self.CLOSETransaction()
+
                     except Exception:
                         self.ErrorText = f"Error :: ==> Request/response format not matched. :: Expected ==> {'XML' if self.isXml else 'JSON'}"
                         self.CLOSETransaction()
@@ -324,10 +326,11 @@ class Transaction_Processing :
                                 or self.Child_Transaction_response.get("TransResponse", {}).get("ResponseText")
                                 or "Response Text Not Found"
                         )
-
                         self.Child_Transaction_TransactionIdentifier = trans_detail.get("TransactionIdentifier", "")
                         self.ChildTransactionType = "Refund" if TransType == "02" else "Void" if TransType == "06" else "Post-auth" if TransType == "05" else "CancelLast" if TransType == "76" else None
                         self.CLOSETransaction()
+
+
                     except Exception:
                         self.ErrorText = f"Error :: ==> Request/response format not matched. :: Expected ==> { 'XML' if self.isXml else 'JSON' }"
                         self.CLOSETransaction()
@@ -339,3 +342,5 @@ class Transaction_Processing :
            self.handleSocketRequest(self.Transaction_Request_Builder.CloseTransactionRequest(), False, "")
         except Exception as e :
             self.ErrorText = f"Error in CLOSETransaction: {e}\nTraceback:\n{traceback.format_exc()}"; print(self.ErrorText)
+
+

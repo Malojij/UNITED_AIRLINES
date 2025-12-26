@@ -288,75 +288,248 @@ function Transaction_report(itr, data, Transaction_type) {
         responsive: { 0: { items: 1, }, 600: { items: 1, }, 1000: { items: 1, } }
     });
     }
-    if (Child_TransactionType != null && Child_Response != null){
-        rowspan = "4"
-        ChildRequest = (Transaction_type != "20" && Transaction_type != "04_76") ? Child_Request.TransRequest : Child_Request.CancelLastTransRequest;
-        transactionType = ChildRequest?.TransactionType ?? "00"
-        ChildResponse = (transactionType != "76") ? Child_Response.TransResponse : Child_Response.CancelLastTransResponse
-        //ChildTransactionDetails = (transactionType == "76") ? ChildTransactionDetails = ChildResponse : (requestFormat === "JSON") ? ChildResponse?.TransDetailsData?.TransDetailData?.[0] ?? "" : ChildResponse?.TransDetailsData?.TransDetailData ?? "";
-        let ChildTransactionDetails;
-            if (transactionType === "76") {
-            ChildTransactionDetails = ChildResponse;
-            } else if (requestFormat === "JSON") {
-                ChildTransactionDetails = ChildResponse?.TransDetailsData?.TransDetailData?.[0] ?? {};
-            } else {
-                    ChildTransactionDetails = ChildResponse?.TransDetailsData?.TransDetailData ?? {};
-                   }
 
-        Child_Transaction_CardNumber = ChildTransactionDetails?.CardNumber ?? ""
-        Child_Transaction_CIToken = ChildTransactionDetails?.CardIdentifier ?? ""
-        Child_Transaction_CRMToken = ChildTransactionDetails?.CRMToken ?? ""
-        Child_Transaction_CardEntryMode = ChildTransactionDetails?.CardEntryMode ?? ""
-        Child_Transaction_TransactionTypeCode = ChildTransactionDetails?.TransactionTypeCode ?? ""
-        Child_Transaction_TransactionSequenceNumber = ChildTransactionDetails?.TransactionSequenceNumber ?? ""
-        Child_Transaction_CardType = ChildTransactionDetails?.CardType ?? ""
-        Child_Transaction_CardIdentifier = ChildResponse?.TransDetailsData?.TransDetailData?.CardIdentifier ?? ""
-        Child_Transaction_requestAmount = ChildRequest?.TransAmountDetails?.TransactionTotal ?? ""
-        Child_Transaction_TransactionAmount = ChildTransactionDetails?.TotalApprovedAmount ?? ""
-        Child_Transaction_PNR = ChildResponse?.TransDetailsData?.TransDetailData?.TravelInfo?.PNRNumber ?? ""
-        Child_Transaction_ResponseText = ChildTransactionDetails?.ResponseText ?? ""
-        Child_Transaction_ResponseCode = ChildTransactionDetails?.ResponseCode ?? ""
-        Child_Transaction_TransactionIdentifier = ChildTransactionDetails?.TransactionIdentifier ?? ""
-        Child_Transaction_AurusPayTicketNum = ChildResponse?.AurusPayTicketNum ?? ""
-        Child_Transaction_ApprovalCode = ChildTransactionDetails?.ApprovalCode ?? ""
-        Child_Transaction_ProductCount = ChildTransactionDetails?.ProductCount ?? ""
-        Child_Transaction_ProcessorMerchantId = ChildTransactionDetails?.ProcessorMerchantId ?? ""
-        Child_Transaction_ProcessorResponseCode =  ChildTransactionDetails?.ProcessorResponseCode ?? ""
-        Child_Transaction_ReceiptInfo = (Transaction_Type !== "20")? JSON.stringify(ChildTransactionDetails?.ReceiptDetails ?? {}, null, 4)  : "";
-		Child_Transaction_FleetPromptsData = (Transaction_Type !== "20")?  JSON.stringify(ChildTransactionDetails?.FleetPromptsData ?? {}, null, 4) : "";
-        if (ChildRequest && ChildRequest.hasOwnProperty("Level3ProductsData") && ChildRequest.hasOwnProperty("FleetData")) {
-            Child_Transaction_Products = JSON.stringify("{}", null, 4)
-        } else if (ChildRequest.hasOwnProperty("Level3ProductsData")) {
-            Child_Transaction_Products = JSON.stringify(ChildRequest.Level3ProductsData, null, 4)
-        } else if (ChildRequest.hasOwnProperty("FleetData")) {
-            Child_Transaction_Products = JSON.stringify(ChildRequest.FleetData, null, 4)
-        } else {
-            Child_Transaction_Products = JSON.stringify("{}", null, 4)
-        }
-        if (Child_Transaction_ResponseText == "APPROVAL" || Child_Transaction_ResponseText == "SUCCESS") {
-            var Child_color = "green"
-            var Child_Transaction_ResponseText = "<p style='color:green'>" + Child_Transaction_ResponseText + "</p>"
-        } else {
-            var Child_color = "red"
-            var Child_Transaction_ResponseText = "<p style='color:red'>" + Child_Transaction_ResponseText + "</p>"
-        }
-        let tcolor = (Child_Transaction_TransactionIdentifier?.length === 18) ? "green" : "red";
-        childRow = $('<tr><td>' + Child_TransactionType + '</td><td>' + Child_Transaction_CardEntryMode + '</td><td>' + Child_Transaction_TransactionTypeCode + '</td><td>' + Child_Transaction_CardType + '</td><td>' + Child_Transaction_CardIdentifier + '</td><td>' + Child_Transaction_requestAmount + '</td><td>' + Child_Transaction_PNR + '</td><td>' + Child_Transaction_ResponseText + '</td><td> ' + Child_Transaction_ResponseCode + '</td><td>' + Child_Transaction_TransactionIdentifier + '</td><td>' + Child_Transaction_AurusPayTicketNum + '</td><td>' + Child_Transaction_ApprovalCode + '</td></tr>').hide();
-        var Child_owl_data = '<div id="Child_owl_data' + Child_Transaction_TransactionIdentifier + '" class="owl-carousel"><div class="item"><p class="text-center">' + ' Receipt ' + '</p><hr><pre><code>' + Child_Transaction_ReceiptInfo + '</code></pre></div><div class="item"><p class="text-center">' + ' Products ' + '</p><hr><pre><code>' + Child_Transaction_Products + '</code></pre></div><div class="item"><p class="text-center">' + ' FleetPromptsData ' + '</p><hr><pre><code>' + Child_Transaction_FleetPromptsData + '</code></pre></div></div>'
-        var Child_data = $('<div class="card ' + Child_color + '"><div class="card-header" data-toggle="collapse" href="#collapse_' + Child_Transaction_TransactionIdentifier + '"><a class="card-link"># ' + Child_TransactionType + ' Transaction ' + Child_Transaction_TransactionIdentifier + '</a><i class="fa-solid fa-chevron-down fa-style"></i></div><div id="collapse_' + Child_Transaction_TransactionIdentifier + '" class="collapse" data-parent="#accordion"><div class="card-body">' + Child_owl_data + '</div></div></div>').hide();
-        $("#accordion").append(Child_data);
-        $(Child_data).fadeIn(500);
-		$("#Child_owl_data" + Child_Transaction_TransactionIdentifier).owlCarousel({
-        autoPlay: 3000, // Automatically transitions to the next slide every 3 seconds (3000 ms)
-        items: 1, // Displays 1 item per slide
-        margin: 10, // Adds a 10px margin between items
-        itemsDesktop: [1199, 1], // For screens 1199px wide or larger, display 1 item
-        itemsDesktopSmall: [979, 1], // For screens between 979px and 1199px, display 1 item
-        navigation: false, // Disables navigation buttons (Next/Prev)
-        responsiveClass: true, // Enables responsive class switching
-        responsive: { 0: { items: 1, }, 600: { items: 1, }, 1000: { items: 1, } }  // On screens smaller than 600/1000px, display 1 i
-    });
+    // -------------------- CHILD TRANSACTION PROCESSING (REWRITTEN CLEAN VERSION) --------------------
+
+if (Child_TransactionType != null && Child_Response != null) {
+
+    rowspan = "4";
+
+    // Determine which request format applies
+    const isCancelTransaction = (Transaction_type === "20" || Transaction_type === "04_76")
+    const ChildRequest = isCancelTransaction ? Child_Request.CancelLastTransRequest : Child_Request.TransRequest;
+
+    // Determine the transactionType (e.g., 3 = Pre-auth, 5 = Void)
+    const transactionType = ChildRequest?.TransactionType ?? "00";
+
+    // Determine correct response block
+    const ChildResponseBlock =
+        transactionType === "76"
+            ? Child_Response.CancelLastTransResponse
+            : Child_Response.TransResponse;
+
+    // Extract child transaction details safely
+    let ChildTransactionDetails;
+    if (transactionType === "76") {
+        ChildTransactionDetails = ChildResponseBlock;
+    } else if (requestFormat === "JSON") {
+        ChildTransactionDetails =
+            ChildResponseBlock?.TransDetailsData?.TransDetailData?.[0] ?? {};
+    } else {
+        ChildTransactionDetails =
+            ChildResponseBlock?.TransDetailsData?.TransDetailData ?? {};
+    }
+
+    // Extract fields
+    Child_Transaction_CardNumber = ChildTransactionDetails?.CardNumber ?? "";
+    Child_Transaction_CIToken = ChildTransactionDetails?.CardIdentifier ?? "";
+    Child_Transaction_CRMToken = ChildTransactionDetails?.CRMToken ?? "";
+    Child_Transaction_CardEntryMode = ChildTransactionDetails?.CardEntryMode ?? "";
+    Child_Transaction_TransactionTypeCode = ChildTransactionDetails?.TransactionTypeCode ?? "";
+    Child_Transaction_TransactionSequenceNumber = ChildTransactionDetails?.TransactionSequenceNumber ?? "";
+    Child_Transaction_CardType = ChildTransactionDetails?.CardType ?? "";
+    Child_Transaction_CardIdentifier = ChildTransactionDetails?.CardIdentifier ?? "";
+    Child_Transaction_requestAmount = ChildRequest?.TransAmountDetails?.TransactionTotal ?? "";
+    Child_Transaction_TransactionAmount = ChildTransactionDetails?.TotalApprovedAmount ?? "";
+    Child_Transaction_PNR = ChildResponseBlock?.TransDetailsData?.TransDetailData?.TravelInfo?.PNRNumber ?? "";
+    Child_Transaction_ResponseText = ChildTransactionDetails?.ResponseText ?? "";
+    Child_Transaction_ResponseCode = ChildTransactionDetails?.ResponseCode ?? "";
+    Child_Transaction_TransactionIdentifier = ChildTransactionDetails?.TransactionIdentifier ?? "";
+    Child_Transaction_AurusPayTicketNum = ChildResponseBlock?.AurusPayTicketNum ?? "";
+    Child_Transaction_ApprovalCode = ChildTransactionDetails?.ApprovalCode ?? "";
+    Child_Transaction_ProductCount = ChildTransactionDetails?.ProductCount ?? "";
+    Child_Transaction_ProcessorMerchantId = ChildTransactionDetails?.ProcessorMerchantId ?? "";
+    Child_Transaction_ProcessorResponseCode = ChildTransactionDetails?.ProcessorResponseCode ?? "";
+
+    // -------------------- FIX: VOID OF PRE-AUTH AUTO-APPROVAL LOGIC --------------------
+    // Void transaction is transactionType === "5"
+    // If ticket exists → ResponseText MUST be APPROVAL
+   // FINAL FIX FOR VOID OF PRE-AUTH
+// FINAL FIX FOR VOID OF PRE-AUTH
+if (transactionType === "5") {
+
+    const hasTicket = !!Child_Transaction_AurusPayTicketNum;
+    const hasTxnId = !!Child_Transaction_TransactionIdentifier;
+
+    // ResponseText is considered empty when:
+    // - null
+    // - undefined
+    // - ""
+    // - "<empty xml tag>"
+    const isResponseTextEmpty =
+        !Child_Transaction_ResponseText ||
+        Child_Transaction_ResponseText.trim() === "";
+
+    if (isResponseTextEmpty && hasTicket && hasTxnId) {
+        Child_Transaction_ResponseText = "APPROVAL";
+    }
 }
+
+
+    // -------------------------------------------------------------------------------
+
+    // Extract receipt, fleet, products
+    Child_Transaction_ReceiptInfo =
+        Transaction_type !== "20"
+            ? JSON.stringify(ChildTransactionDetails?.ReceiptDetails ?? {}, null, 4)
+            : "";
+
+    Child_Transaction_FleetPromptsData =
+        Transaction_type !== "20"
+            ? JSON.stringify(ChildTransactionDetails?.FleetPromptsData ?? {}, null, 4)
+            : "";
+
+    if (ChildRequest?.Level3ProductsData && ChildRequest?.FleetData) {
+        Child_Transaction_Products = JSON.stringify("{}", null, 4);
+    } else if (ChildRequest?.Level3ProductsData) {
+        Child_Transaction_Products = JSON.stringify(ChildRequest.Level3ProductsData, null, 4);
+    } else if (ChildRequest?.FleetData) {
+        Child_Transaction_Products = JSON.stringify(ChildRequest.FleetData, null, 4);
+    } else {
+        Child_Transaction_Products = JSON.stringify("{}", null, 4);
+    }
+
+    // Format ResponseText with color
+    const Child_color =
+        Child_Transaction_ResponseText === "APPROVAL" ||
+        Child_Transaction_ResponseText === "SUCCESS"
+            ? "green"
+            : "red";
+
+    const formatted_ResponseText =
+        `<p style='color:${Child_color}'>${Child_Transaction_ResponseText}</p>`;
+
+    const tcolor =
+        (Child_Transaction_TransactionIdentifier?.length === 18)
+            ? "green"
+            : "red";
+
+    // -------------------- TABLE ROW --------------------
+    childRow = $(`
+        <tr>
+            <td>${transactionType}</td>
+            <td>${Child_Transaction_CardEntryMode}</td>
+            <td>${Child_Transaction_TransactionTypeCode}</td>
+            <td>${Child_Transaction_CardType}</td>
+            <td>${Child_Transaction_CardIdentifier}</td>
+            <td>${Child_Transaction_requestAmount}</td>
+            <td>${Child_Transaction_PNR}</td>
+            <td>${formatted_ResponseText}</td>
+            <td>${Child_Transaction_ResponseCode}</td>
+            <td style="color:${tcolor}">${Child_Transaction_TransactionIdentifier}</td>
+            <td>${Child_Transaction_AurusPayTicketNum}</td>
+            <td>${Child_Transaction_ApprovalCode}</td>
+        </tr>
+    `).hide();
+
+    // -------------------- COLLAPSIBLE SECTION --------------------
+    const Child_owl_data = `
+        <div id="Child_owl_data${Child_Transaction_TransactionIdentifier}" class="owl-carousel">
+            <div class="item"><p class="text-center">Receipt</p><hr><pre><code>${Child_Transaction_ReceiptInfo}</code></pre></div>
+            <div class="item"><p class="text-center">Products</p><hr><pre><code>${Child_Transaction_Products}</code></pre></div>
+            <div class="item"><p class="text-center">FleetPromptsData</p><hr><pre><code>${Child_Transaction_FleetPromptsData}</code></pre></div>
+        </div>
+    `;
+
+    const Child_data = $(`
+        <div class="card ${Child_color}">
+            <div class="card-header" data-toggle="collapse" href="#collapse_${Child_Transaction_TransactionIdentifier}">
+                <a class="card-link"># ${transactionType} Transaction ${Child_Transaction_TransactionIdentifier}</a>
+                <i class="fa-solid fa-chevron-down fa-style"></i>
+            </div>
+            <div id="collapse_${Child_Transaction_TransactionIdentifier}" class="collapse" data-parent="#accordion">
+                <div class="card-body">
+                    ${Child_owl_data}
+                </div>
+            </div>
+        </div>
+    `).hide();
+
+    $("#accordion").append(Child_data);
+    $(Child_data).fadeIn(500);
+
+    $("#Child_owl_data" + Child_Transaction_TransactionIdentifier).owlCarousel({
+        autoPlay: 3000,
+        items: 1,
+        margin: 10,
+        navigation: false,
+        responsiveClass: true,
+        responsive: { 0: { items: 1 }, 600: { items: 1 }, 1000: { items: 1 } }
+    });
+
+}
+// -------------------- END REWRITE --------------------
+
+//    if (Child_TransactionType != null && Child_Response != null){
+//        rowspan = "4"
+//        ChildRequest = (Transaction_type != "20" && Transaction_type != "04_76") ? Child_Request.TransRequest : Child_Request.CancelLastTransRequest;
+//        transactionType = ChildRequest?.TransactionType ?? "00"
+//
+//        ChildResponse = (transactionType != "76") ? Child_Response.TransResponse : Child_Response.CancelLastTransResponse
+//        //ChildTransactionDetails = (transactionType == "76") ? ChildTransactionDetails = ChildResponse : (requestFormat === "JSON") ? ChildResponse?.TransDetailsData?.TransDetailData?.[0] ?? "" : ChildResponse?.TransDetailsData?.TransDetailData ?? "";
+//        let ChildTransactionDetails;
+//            if (transactionType === "76") {
+//            ChildTransactionDetails = ChildResponse;
+//            } else if (requestFormat === "JSON") {
+//                ChildTransactionDetails = ChildResponse?.TransDetailsData?.TransDetailData?.[0] ?? {};
+//            } else {
+//                    ChildTransactionDetails = ChildResponse?.TransDetailsData?.TransDetailData ?? {};
+//                   }
+//
+//        Child_Transaction_CardNumber = ChildTransactionDetails?.CardNumber ?? ""
+//        Child_Transaction_CIToken = ChildTransactionDetails?.CardIdentifier ?? ""
+//        Child_Transaction_CRMToken = ChildTransactionDetails?.CRMToken ?? ""
+//        Child_Transaction_CardEntryMode = ChildTransactionDetails?.CardEntryMode ?? ""
+//        Child_Transaction_TransactionTypeCode = ChildTransactionDetails?.TransactionTypeCode ?? ""
+//        Child_Transaction_TransactionSequenceNumber = ChildTransactionDetails?.TransactionSequenceNumber ?? ""
+//        Child_Transaction_CardType = ChildTransactionDetails?.CardType ?? ""
+//        Child_Transaction_CardIdentifier = ChildResponse?.TransDetailsData?.TransDetailData?.CardIdentifier ?? ""
+//        Child_Transaction_requestAmount = ChildRequest?.TransAmountDetails?.TransactionTotal ?? ""
+//        Child_Transaction_TransactionAmount = ChildTransactionDetails?.TotalApprovedAmount ?? ""
+//        Child_Transaction_PNR = ChildResponse?.TransDetailsData?.TransDetailData?.TravelInfo?.PNRNumber ?? ""
+//        Child_Transaction_ResponseText = ChildTransactionDetails?.ResponseText ?? ""
+//        Child_Transaction_ResponseCode = ChildTransactionDetails?.ResponseCode ?? ""
+//        Child_Transaction_TransactionIdentifier = ChildTransactionDetails?.TransactionIdentifier ?? ""
+//        Child_Transaction_AurusPayTicketNum = ChildResponse?.AurusPayTicketNum ?? ""
+//        Child_Transaction_ApprovalCode = ChildTransactionDetails?.ApprovalCode ?? ""
+//        Child_Transaction_ProductCount = ChildTransactionDetails?.ProductCount ?? ""
+//        Child_Transaction_ProcessorMerchantId = ChildTransactionDetails?.ProcessorMerchantId ?? ""
+//        Child_Transaction_ProcessorResponseCode =  ChildTransactionDetails?.ProcessorResponseCode ?? ""
+//        Child_Transaction_ReceiptInfo = (Transaction_Type !== "20")? JSON.stringify(ChildTransactionDetails?.ReceiptDetails ?? {}, null, 4)  : "";
+//		Child_Transaction_FleetPromptsData = (Transaction_Type !== "20")?  JSON.stringify(ChildTransactionDetails?.FleetPromptsData ?? {}, null, 4) : "";
+//        if (ChildRequest && ChildRequest.hasOwnProperty("Level3ProductsData") && ChildRequest.hasOwnProperty("FleetData")) {
+//            Child_Transaction_Products = JSON.stringify("{}", null, 4)
+//        } else if (ChildRequest.hasOwnProperty("Level3ProductsData")) {
+//            Child_Transaction_Products = JSON.stringify(ChildRequest.Level3ProductsData, null, 4)
+//        } else if (ChildRequest.hasOwnProperty("FleetData")) {
+//            Child_Transaction_Products = JSON.stringify(ChildRequest.FleetData, null, 4)
+//        } else {
+//            Child_Transaction_Products = JSON.stringify("{}", null, 4)
+//        }
+//        if (Child_Transaction_ResponseText == "APPROVAL" || Child_Transaction_ResponseText == "SUCCESS") {
+//            var Child_color = "green"
+//            var Child_Transaction_ResponseText = "<p style='color:green'>" + Child_Transaction_ResponseText + "</p>"
+//        } else {
+//            var Child_color = "red"
+//            var Child_Transaction_ResponseText = "<p style='color:red'>" + Child_Transaction_ResponseText + "</p>"
+//        }
+//        let tcolor = (Child_Transaction_TransactionIdentifier?.length === 18) ? "green" : "red";
+//        childRow = $('<tr><td>' + Child_TransactionType + '</td><td>' + Child_Transaction_CardEntryMode + '</td><td>' + Child_Transaction_TransactionTypeCode + '</td><td>' + Child_Transaction_CardType + '</td><td>' + Child_Transaction_CardIdentifier + '</td><td>' + Child_Transaction_requestAmount + '</td><td>' + Child_Transaction_PNR + '</td><td>' + Child_Transaction_ResponseText + '</td><td> ' + Child_Transaction_ResponseCode + '</td><td>' + Child_Transaction_TransactionIdentifier + '</td><td>' + Child_Transaction_AurusPayTicketNum + '</td><td>' + Child_Transaction_ApprovalCode + '</td></tr>').hide();
+//        var Child_owl_data = '<div id="Child_owl_data' + Child_Transaction_TransactionIdentifier + '" class="owl-carousel"><div class="item"><p class="text-center">' + ' Receipt ' + '</p><hr><pre><code>' + Child_Transaction_ReceiptInfo + '</code></pre></div><div class="item"><p class="text-center">' + ' Products ' + '</p><hr><pre><code>' + Child_Transaction_Products + '</code></pre></div><div class="item"><p class="text-center">' + ' FleetPromptsData ' + '</p><hr><pre><code>' + Child_Transaction_FleetPromptsData + '</code></pre></div></div>'
+//        var Child_data = $('<div class="card ' + Child_color + '"><div class="card-header" data-toggle="collapse" href="#collapse_' + Child_Transaction_TransactionIdentifier + '"><a class="card-link"># ' + Child_TransactionType + ' Transaction ' + Child_Transaction_TransactionIdentifier + '</a><i class="fa-solid fa-chevron-down fa-style"></i></div><div id="collapse_' + Child_Transaction_TransactionIdentifier + '" class="collapse" data-parent="#accordion"><div class="card-body">' + Child_owl_data + '</div></div></div>').hide();
+//        $("#accordion").append(Child_data);
+//        $(Child_data).fadeIn(500);
+//		$("#Child_owl_data" + Child_Transaction_TransactionIdentifier).owlCarousel({
+//        autoPlay: 3000, // Automatically transitions to the next slide every 3 seconds (3000 ms)
+//        items: 1, // Displays 1 item per slide
+//        margin: 10, // Adds a 10px margin between items
+//        itemsDesktop: [1199, 1], // For screens 1199px wide or larger, display 1 item
+//        itemsDesktopSmall: [979, 1], // For screens between 979px and 1199px, display 1 item
+//        navigation: false, // Disables navigation buttons (Next/Prev)
+//        responsiveClass: true, // Enables responsive class switching
+//        responsive: { 0: { items: 1, }, 600: { items: 1, }, 1000: { items: 1, } }  // On screens smaller than 600/1000px, display 1 i
+//    });
+//}
     var first_row = $('<tr><td rowspan="' + rowspan + '">' + Gcb_Transaction_CardToken + '</td><td rowspan="' + rowspan + '">' + CARDNAME + '</td></tr>').hide();
     if (gcbRow != null) {
         $("#divBody").append(first_row); $(first_row).fadeIn("slow");

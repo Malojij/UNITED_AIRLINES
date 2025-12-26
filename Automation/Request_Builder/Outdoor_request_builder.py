@@ -1,7 +1,9 @@
-import datetime
 import json
 import time
 
+import random
+import string
+import datetime
 
 
 from API.Excel_operations import Excel_Operations
@@ -23,8 +25,9 @@ class Outdoor_Request_Builder :
         self.SessionId = config.SessionId()
         self.ADSDKSpecVer = config.ADSDKSpecVer()
         self.APPID = "01"
+        self.SourceTransID = self.generate_source_trans_id()
 
-        self.defaultAmount = "0.01"
+        self.defaultAmount = "10.00"
         self.TodaysDate = datetime.datetime.now().strftime('%m/%d/%Y').replace("/", "")
         self.YYMMDD = datetime.datetime.now().strftime('%y/%m/%d').replace("/", "")
         self.currentTime = time.strftime("%H:%M:%S:%MS", time.localtime()).replace(":", "")[:-3]
@@ -42,6 +45,14 @@ class Outdoor_Request_Builder :
             "05" : "05", "05_01" : "05","05_09" : "05",                                                         #for post-auth
             "099" : "09"                                                                        #for reversal of post-auth
         }
+
+    def generate_source_trans_id(self):
+        import random
+        import string
+        import datetime
+        prefix = ''.join(random.choices(string.ascii_uppercase, k=8))
+        timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+        return prefix + timestamp
 
     def gcb(self, lookUpFlag, TrackData, EncryptionMode, CardDataSource, EMVDetailsData, PINBlock, KSNBlock, PinBlockMode) :
         data = Excel_Operations.readOutdoorFile("GetCardBINRequest.txt")
@@ -89,6 +100,15 @@ class Outdoor_Request_Builder :
                     } if CardType.upper().startswith("GC") else {}
                 ),
                 "CardType" : CardType,
+                "SourceTransactionId": self.SourceTransID,  # <-- ADDED HERE
+                **(
+                    {
+                        "SubTransType": "04" if TransactionTypeToRequest in ("16", "11") else "",
+                        "BlackHawkUpc": Gift_processor.BlackHawkUpc_finder(
+                            fleet_processor.cardnumber_finder(TrackData, CardDataSource)),
+                        "ProgramId": "11" if CardType.upper().endswith("P") else "",
+                    } if CardType.upper().startswith("GC") else {}
+                ),
                 **(
                     {"CardDataInfo" :
                         {
@@ -159,7 +179,8 @@ class Outdoor_Request_Builder :
                 "OrigTransactionIdentifier" : Parent_TransactionID,
                 "OrigAurusPayTicketNum" : Parent_AurusPayTicketNum,
                 "DuplicateTransCheck" : DuplicateTransCheck,
-                "OfflineTicketNumber" : f"O{self.YYMMDD}12345678001" if DuplicateTransCheck == "1" else ""
+                "OfflineTicketNumber" : f"O{self.YYMMDD}12345678001" if DuplicateTransCheck == "1" else "",
+                 "SourceTransactionId": self.SourceTransID
             })
             TransAmountDetails.update({
                 "TransactionTotal" :TransAmount if TransactionTypeToRequest.upper() == "06" else self.defaultAmount,
