@@ -142,6 +142,7 @@ class Transaction_Request_Builder :
 
             })
             self.request = Excel_Operations.ConvertToXml(data) if self.isXml else json.dumps(data)
+
         return self.request
 
     def ShowScreenRequest(self, message, message2, flag) :

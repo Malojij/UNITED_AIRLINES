@@ -64,53 +64,77 @@ class Transaction_Processing :
         self.tokenForTransaction = ""
         self.POSType = config.POSType()
 
-    def handleSocketRequest(self, request_data, bypassEnabled, bypassOption) :
-        if not self.isXml: request_data = json.loads(request_data)
-        if self.isHttps :
+    def handleSocketRequest(self, request_data, bypassEnabled, bypassOption):
+
+        # 🔥 FIX 1: normalize payload ONCE
+        if not self.isXml:
+            if isinstance(request_data, str):
+                payload = request_data  # already JSON
+            else:
+                payload = json.dumps(request_data)  # dict → JSON
+        else:
+            payload = request_data  # XML stays as-is
+
+        if self.isHttps:
             try:
                 self.socket.openSocket(port=self.port)
                 try:
-                    self.socket.sendRequest(str(request_data))
-                    try:
-                        response = self.socket.receiveResponseFromSocket()
-                        return response
-                    except Exception as e:
-                        self.ErrorText = f"Response not received from @ {self.ip}::{self.port} ==> {e}"
+                    # 🔥 FIX 2: send JSON, not str(dict)
+                    self.socket.sendRequest(payload)
+                    response = self.socket.receiveResponseFromSocket()
+                    return response
                 except Exception as e:
-                    self.ErrorText = f"Request send Fails @ {self.ip}::{self.port} ==> {e}"
+                    self.ErrorText = f"Request/Response failure @ {self.ip}::{self.port} ==> {e}"
             except Exception as e:
-                self.ErrorText = f"Connection Fails @ {self.ip}::{self.port} ==> {e}"
-        else :
-            threads = []
-            response_list = []
-            if bypassEnabled :
-                bypassData = self.Transaction_Request_Builder.ByPassScreenRequest(bypassOption)
-                if not self.isXml : bypassData = json.loads(bypassData)
-                data = [request_data, bypassData]
-
-                def send_request(url, request_data) :
-                    self.socket.httpsRequest(url, request_data, config.request_format().lower())
-                    response = self.socket.receiveResponsehttps()
-                    if '{"ByPassScreenResponse":' not in response : response_list.append(response)
-
-                for i in data :
-                    thread = threading.Thread(target=send_request, args=(self.url, i))
-                    threads.append(thread)
-                    thread.start()
-                    time.sleep(3)
-                for thread in threads : thread.join()
-                response = response_list[0]
-                return response
-            else :
-                try:
-                    self.socket.httpsRequest(self.url, request_data, config.request_format().lower())
-                    try:
-                        response = self.socket.receiveResponsehttps()
-                        return response
-                    except Exception as e:
-                        self.ErrorText = f"Received response Fails @ {self.ip}::{self.port} ==> {e}"
-                except Exception as e:
-                    self.ErrorText = f"Connection Fails @ {self.ip}::{self.port} ==> {e}"
+                self.ErrorText = f"Connection failure @ {self.ip}::{self.port} ==> {e}"
+    #
+    # def handleSocketRequest(self, request_data, bypassEnabled, bypassOption):
+    #     if not self.isXml: request_data = json.loads(request_data)
+    #     if self.isHttps:
+    #         try:
+    #             self.socket.openSocket(port=self.port)
+    #             try:
+    #                 self.socket.sendRequest(str(request_data))
+    #                 try:
+    #                     response = self.socket.receiveResponseFromSocket()
+    #                     return response
+    #                 except Exception as e:
+    #                     self.ErrorText = f"Response not received from @ {self.ip}::{self.port} ==> {e}"
+    #             except Exception as e:
+    #                 self.ErrorText = f"Request send Fails @ {self.ip}::{self.port} ==> {e}"
+    #         except Exception as e:
+    #             self.ErrorText = f"Connection Fails @ {self.ip}::{self.port} ==> {e}"
+    #     else:
+    #         threads = []
+    #         response_list = []
+    #         if bypassEnabled:
+    #             bypassData = self.Transaction_Request_Builder.ByPassScreenRequest(bypassOption)
+    #             if not self.isXml: bypassData = json.loads(bypassData)
+    #             data = [request_data, bypassData]
+    #
+    #             def send_request(url, request_data):
+    #                 self.socket.httpsRequest(url, request_data, config.request_format().lower())
+    #                 response = self.socket.receiveResponsehttps()
+    #                 if '{"ByPassScreenResponse":' not in response: response_list.append(response)
+    #
+    #             for i in data:
+    #                 thread = threading.Thread(target=send_request, args=(self.url, i))
+    #                 threads.append(thread)
+    #                 thread.start()
+    #                 time.sleep(3)
+    #             for thread in threads: thread.join()
+    #             response = response_list[0]
+    #             return response
+    #         else:
+    #             try:
+    #                 self.socket.httpsRequest(self.url, request_data, config.request_format().lower())
+    #                 try:
+    #                     response = self.socket.receiveResponsehttps()
+    #                     return response
+    #                 except Exception as e:
+    #                     self.ErrorText = f"Received response Fails @ {self.ip}::{self.port} ==> {e}"
+    #             except Exception as e:
+    #                 self.ErrorText = f"Connection Fails @ {self.ip}::{self.port} ==> {e}"
 
     def GetStatusRequest(self, RequestType, bypassEnabled, bypassOption) :
         try : self.handleSocketRequest(self.Transaction_Request_Builder.GetStatusRequest(RequestType), bypassEnabled, bypassOption)
